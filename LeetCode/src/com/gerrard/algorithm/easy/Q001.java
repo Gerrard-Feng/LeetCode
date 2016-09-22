@@ -29,6 +29,7 @@ public class Q001 {
 		list = Arrays.asList(collectionArray);
 		for (Integer a : list) {
 			if (list.contains(sum - a)) {
+				// 防止原数组有重复数字的情况
 				result[0] = list.indexOf(a);
 				result[1] = list.lastIndexOf(sum - a);
 				flag = true;
