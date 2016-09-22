@@ -55,11 +55,17 @@ Write the code that will take a string and make this conversion given a number o
 string convert(string text, int nRows);
 Example1:
 convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
-Example2：
+Example2:
 a       i       q       y
 b     h j     p r     x z
 c   g   k   o   s   w
 d f     l n     t v
 e       m       u
 return "aiqybhjprxzcgkoswdflntvemu"
+Example3:
+a     g    m     s     y
+b   f h  l n   r t   x z
+c e   i k  o q   u w
+d     j    p     v
+return "agmsybfhlnrtxzceikoquwdjpv"
 

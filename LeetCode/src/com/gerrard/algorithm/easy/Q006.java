@@ -3,10 +3,11 @@ package com.gerrard.algorithm.easy;
 public class Q006 {
 
 	public static void main(String[] args) {
-		 String str1 = "PAYPALISHIRING";
-		 System.out.println(method(str1, 3));
+		String str1 = "PAYPALISHIRING";
+		System.out.println(method(str1, 3));
 		String str2 = "abcdefghijklmnopqrstuvwxyz";
 		System.out.println(method(str2, 5));
+		System.out.println(method(str2, 4));
 	}
 
 	private static String method(String text, int nRows) {
