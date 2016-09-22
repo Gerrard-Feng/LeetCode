@@ -53,5 +53,13 @@ Y   I   R
 And then read line by line: "PAHNAPLSIIGYIR"
 Write the code that will take a string and make this conversion given a number of rows:
 string convert(string text, int nRows);
-Example:
+Example1:
 convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+Example2：
+a       i       q       y
+b     h j     p r     x z
+c   g   k   o   s   w
+d f     l n     t v
+e       m       u
+return "aiqybhjprxzcgkoswdflntvemu"
+
