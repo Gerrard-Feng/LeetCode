@@ -102,3 +102,24 @@ atoi函数要求：
 3.如果遇到的第一个非空字符串，不是一个整数，甚至于，字符串根本就是空的或完全由空白键组成，返回0。
 4.如果不能有效转化，返回0；如果超出整型的最大/最小值，返回整型数的最大/最小值。
 
+Q009(Easy): Palindrome Number
+Determine whether an integer is a palindrome. Do this without extra space.
+Some Examples:
+Number like 1,121,34543,345543
+
+Q010(Hard): Regular Expression Matching
+Implement regular expression matching with support for '.' and '*'.
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+The matching should cover the entire input string (not partial).
+Some Examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "a*") → true
+isMatch("aa", ".*") → true
+isMatch("ab", ".*") → true
+isMatch("aab", "c*a*b") → true
+isMatch("aab", ".*a") → false
+isMatch("aab", ".*ab") → true
+
