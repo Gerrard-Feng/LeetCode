@@ -22,5 +22,11 @@ public class Test {
 		for (int a : copy2) {
 			System.out.print(a + " ");
 		}
+		System.out.println();
+		int[] arr1 = new int[] {};
+		System.out.println(arr1.length == 0);
+		int[] arr2 = new int[] { 1 };
+		System.out.println(Arrays.copyOf(arr2, 0).length == 0);
+		System.out.println(Arrays.copyOfRange(arr2, 1, 1).length == 0);
 	}
 }
