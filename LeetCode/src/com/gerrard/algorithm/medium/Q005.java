@@ -4,10 +4,19 @@ public class Q005 {
 
 	public static void main(String[] args) {
 
-		String str = "cabcba";
-		int startIndex = method(str)[0];
-		int length = method(str)[1];
-		System.out.println(str.substring(startIndex, startIndex + length));
+		System.out.println("<==========第一组测试==========>");
+		String str1 = "cabcbaabcaaaaaaa";
+		int[] resultArray1 = method(str1);
+		int startIndex1 = resultArray1[0];
+		int length1 = resultArray1[1];
+		System.out.println(str1.substring(startIndex1, startIndex1 + length1));
+
+		System.out.println("<==========第二组测试==========>");
+		String str2 = "cbaabc";
+		int[] resultArray2 = method(str2);
+		int startIndex2 = resultArray2[0];
+		int length2 = resultArray2[1];
+		System.out.println(str2.substring(startIndex2, startIndex2 + length2));
 	}
 
 	// 返回一个长度为2的数组，第一位是startIndex，第二位是length
@@ -20,6 +29,10 @@ public class Q005 {
 		int count1;
 		int count2;
 		for (int i = 0; i < array.length; i++) {
+			// 超过字符串一半之后，理论上可能达到的最大长度小于当前的最大长度，直接退出循环
+			if (i > (array.length - 1) / 2 && 2 * (array.length - 1 - i) + 1 < maxLength) {
+				break;
+			}
 			count1 = singleCore(i, array);
 			count2 = doubleCore(i, array);
 			// 存在超过最大长度的情况
@@ -47,10 +60,10 @@ public class Q005 {
 	private static int singleCore(int index, char[] array) {
 		// 长度计数器
 		int count = 1;
-		// 扩展次数
-		int extendTime = 0;
+		// 扩展次数，单核长度为1自对称，不判断
+		int extendTime = 1;
 		// 直到外扩超过数组范围，一直循环
-		while (index - extendTime > 0 && index + extendTime < array.length - 1) {
+		while (index - extendTime >= 0 && index + extendTime < array.length) {
 			// 不对称，直接跳出
 			if (array[index - extendTime] != array[index + extendTime]) {
 				break;
@@ -68,7 +81,8 @@ public class Q005 {
 		// 右双核的情况，最后一位排除
 		if (index != array.length - 1) {
 			int extendTime = 0;
-			while (index - extendTime > 0 && index + extendTime < array.length - 1) {
+			// 双核的出界点的基础是不同的
+			while (index - extendTime >= 0 && index + extendTime + 1 < array.length) {
 				if (array[index - extendTime] != array[index + 1 + extendTime]) {
 					break;
 				}
