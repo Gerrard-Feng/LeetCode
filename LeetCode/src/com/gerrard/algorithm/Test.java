@@ -28,5 +28,16 @@ public class Test {
 		int[] arr2 = new int[] { 1 };
 		System.out.println(Arrays.copyOf(arr2, 0).length == 0);
 		System.out.println(Arrays.copyOfRange(arr2, 1, 1).length == 0);
+
+		StringBuffer sb = new StringBuffer();
+		char a = 'A';
+		char b = 'B';
+		sb.append(a);
+		sb.append(b);
+		System.out.println(sb);
+
+		int aa = 2;
+		int bb = -3;
+		System.out.println(-(aa + bb));
 	}
 }
