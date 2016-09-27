@@ -50,7 +50,7 @@ public class Q008 {
 			// 累加赋值，注意其实位置的下标
 			for (int i = 0; i < maxLevel; i++) {
 				// 注意char型的数字，转成数字的处理
-				sum += Character.valueOf((char) (array[i] - '0')) * Math.pow(10, --copyMaxLevel);
+				sum += (array[i] - '0') * Math.pow(10, --copyMaxLevel);
 			}
 			// 超出范围处理
 			long realNumber = sum * operatorFlag;
