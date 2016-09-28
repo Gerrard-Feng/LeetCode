@@ -67,8 +67,8 @@ public class Q015 {
 				// 定下两个，其实下一个也就决定了
 				int numberToFind = -(array[i] + array[j]);
 				// Arrays.binarySearch()方法只能在有序数组中使用
-				// 注意不是在整个数组上用这个方法，是在剩余数组上
-				int index = Arrays.binarySearch(Arrays.copyOfRange(array, j, array.length), numberToFind);
+				// 注意不是在整个数组上用这个方法，是在剩余数组上（夹逼过的）
+				int index = Arrays.binarySearch(Arrays.copyOfRange(array, j, lengthEnd), numberToFind);
 				// Arrays.binarySearch()查找失败时，会返回一个负值
 				// JAVA_API：这保证了当且仅当此键被找到时，返回的值将 >= 0。
 				if (index >= 0) {
