@@ -116,4 +116,3 @@ isMatch("ab", ".*") → true
 isMatch("aab", "c*a*b") → true
 isMatch("aab", ".*a") → false
 isMatch("aab", ".*ab") → true
-

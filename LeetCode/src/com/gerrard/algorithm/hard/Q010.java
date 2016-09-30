@@ -73,7 +73,6 @@ public class Q010 {
 
 	// 由于"*"一定会匹配成功，返回原字符串的匹配长度
 	// str不是原字符串，是"*"开始匹配的第一个位置
-	// 题目限制，regularStarContext长度为1
 	private static int matchStarLength(String str, String regularString) {
 		int length = 0;
 		if (regularString.substring(0, 1).equals(".")) {
