@@ -39,14 +39,10 @@ public class Q015 {
 		Set<int[]> set = new LinkedHashSet<>();
 		// 先给数组排序
 		Arrays.sort(array);
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 0; i < array.length - 2; i++) {
 			// 第一个数大于0，之后更加没机会了
 			if (array[i] > 0) {
 				return set;
-			}
-			// 之后剩余的个数不够了
-			if (i == array.length - 2) {
-				break;
 			}
 			// 先判断一下，如果当前值和上个值相同，直接跳过，注意第一位是没有“上一位”的概念的
 			if (i != 0 && array[i] == array[i - 1]) {
@@ -55,11 +51,7 @@ public class Q015 {
 			}
 			// 下次探寻终点
 			int lengthEnd = array.length - i;
-			for (int j = i + 1; j < lengthEnd; j++) {
-				// 同理，剩余个数不足
-				if (j == lengthEnd - 1) {
-					break;
-				}
+			for (int j = i + 1; j < lengthEnd - 1; j++) {
 				// 同样的判断，第一次是没有必要的
 				if (j != i + 1 && array[j] == array[j - 1]) {
 					continue;
