@@ -11,10 +11,14 @@ public class Q012 {
 	}
 
 	private static String method(int number) {
+		// 入参保护
+		if (number > 3999 || number < 1) {
+			return null;
+		}
 		// 结果集
 		StringBuffer result = new StringBuffer();
 		// 罗马字符集
-		char[][] romanArray = new char[][] { { 'I', 'V', 'X' }, { 'X', 'L', 'C' }, { 'C', 'D', 'M' }, { 'M' } };
+		char[][] romanArray = new char[][] { { 'I', 'V' }, { 'X', 'L' }, { 'C', 'D' }, { 'M' } };
 		// 创建副本确定最高位数
 		int maxLevel = 0;
 		int copyNumber = number;
@@ -29,7 +33,7 @@ public class Q012 {
 			if (currentNumber == 4) {
 				result.append("" + romanArray[maxLevel][0] + romanArray[maxLevel][1]);
 			} else if (currentNumber == 9) {
-				result.append("" + romanArray[maxLevel][0] + romanArray[maxLevel][2]);
+				result.append("" + romanArray[maxLevel][0] + romanArray[maxLevel + 1][0]);
 			} else {
 				// 大于等于5处理
 				if (currentNumber / 5 == 1) {
