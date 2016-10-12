@@ -7,6 +7,7 @@ public class Test {
 	public static void main(String[] args) {
 
 		int[] array = new int[] { 1, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 9 };
-		System.out.println(Arrays.binarySearch(array, 4));
+		array = Arrays.copyOfRange(array, 1, array.length);
+		System.out.println();
 	}
 }
