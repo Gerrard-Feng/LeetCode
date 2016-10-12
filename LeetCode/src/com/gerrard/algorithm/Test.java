@@ -1,13 +1,17 @@
 package com.gerrard.algorithm;
 
-import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class Test {
 
 	public static void main(String[] args) {
 
-		int[] array = new int[] { 1, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 9 };
-		array = Arrays.copyOfRange(array, 1, array.length);
-		System.out.println();
+		Set<int[]> set = new LinkedHashSet<>();
+		int[] a = new int[]{1};
+		int[] b = new int[]{1};
+		set.add(a);
+		set.add(b);
+		System.out.println(set.size());
 	}
 }

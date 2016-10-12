@@ -7,7 +7,7 @@ import java.util.Set;
 public class Q018 {
 
 	public static void main(String[] args) {
-		int[] array = new int[] { 1, 0, -1, 0, -2, 2 };
+		int[] array = new int[] { 1, 0, -1, 0, -2, 2, 3, 4, -7, -7 };
 		Set<int[]> set = method(array, 0, 4);
 		for (int[] a : set) {
 			System.out.print("[");
@@ -34,17 +34,20 @@ public class Q018 {
 		Set<int[]> result = new LinkedHashSet<>();
 		// 递归终点是2Sum问题
 		if (kSum == 2) {
-			Set<int[]> tempResult = new LinkedHashSet<>();
 			if (target < array[0]) {
 				// 因为数组有序，target如果小于数组第一项，返回空集合
-				return tempResult;
+				return result;
 			} else {
+				int lastNumber = Integer.MAX_VALUE;
 				for (int i = 0; i < array.length - 1; i++) {
+					if (array[i] == lastNumber) {
+						continue;
+					}
 					int tempTarget = target - array[i];
 					// 秉承始终向后找的思想，下一项小于tempTarget，直接退出
 					// 而且tempTarget会越来越小，array[i+1]越来越大，再往后更加不可能了，直接返回
 					if (tempTarget < array[i + 1]) {
-						return tempResult;
+						return result;
 					} else {
 						int[] remainArray = Arrays.copyOfRange(array, i + 1, array.length);
 						int index = Arrays.binarySearch(remainArray, tempTarget);
@@ -55,12 +58,19 @@ public class Q018 {
 							result.add(newArray);
 						}
 					}
+					lastNumber = array[i];
 				}
 			}
 		} else {
 			// 大于2Sum问题，使用递归
+			// 记录上一个值，这是必须的，因为Set集合对于2个一模一样的数组无能为力
+			int lastNumber = Integer.MAX_VALUE;
 			for (int i = 0; i < array.length - (kSum - 1); i++) {
+				if (array[i] == lastNumber) {
+					continue;
+				}
 				int tempTarget = target - array[i];
+				// 开启递归
 				Set<int[]> tempResult = method(Arrays.copyOfRange(array, i + 1, array.length), tempTarget, kSum - 1);
 				for (int[] a : tempResult) {
 					int[] newArray = new int[a.length + 1];
@@ -70,6 +80,8 @@ public class Q018 {
 					}
 					result.add(newArray);
 				}
+				// 下次循环前，变更lastNumber
+				lastNumber = array[i];
 			}
 		}
 		return result;
