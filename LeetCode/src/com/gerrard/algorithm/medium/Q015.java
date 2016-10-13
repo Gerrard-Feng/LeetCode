@@ -50,8 +50,12 @@ public class Q015 {
 				continue;
 			}
 			// 下次探寻终点
-			int lengthEnd = array.length - i;
+			int lengthEnd = array.length;
 			for (int j = i + 1; j < lengthEnd - 1; j++) {
+				// 内循环第一个数，要大于0-array[i]
+				if (array[j] > -array[i]) {
+					break;
+				}
 				// 同样的判断，第一次是没有必要的
 				if (j != i + 1 && array[j] == array[j - 1]) {
 					continue;
