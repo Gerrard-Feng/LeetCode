@@ -7,6 +7,7 @@ Because nums[0] + nums[1] = 2 + 7 = 9,
 return [0, 1].
 
 
+
 Q002(Medium): Add Two Numbers
 You are given two linked lists representing two non-negative numbers. 
 The digits are stored in reverse order and each of their nodes contain a single digit. 
@@ -16,6 +17,7 @@ Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
 Output: 7 -> 0 -> 8
 
 
+
 Q003(Medium): Longest Substring Without Repeating Characters
 Given a string, find the length of the longest substring without repeating characters.
 Example:
@@ -23,6 +25,7 @@ Given "abcabcbb", the answer is "abc", which the length is 3.
 Given "bbbbb", the answer is "b", with the length of 1.
 Given "pwwkew", the answer is "wke", with the length of 3. 
 Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
 
 
 Q004(Hard): Median of Two Sorted Arrays
@@ -38,11 +41,15 @@ nums1 = [1, 2]
 nums2 = [3, 4]
 The median is (2 + 3)/2 = 2.5
 
+
+
 Q005(Medium): Longest Palindromic Substring
 Given a string S, find the longest palindromic substring in S. 
 You may assume that the maximum length of S is 1000, and there exists one unique longest palindromic substring.
 Example:
 "cabccba", the longest palindromic substring is "abccba".
+
+
 
 Q006(Easy): ZigZag Conversion
 The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: 
@@ -69,12 +76,16 @@ c e   i k  o q   u w
 d     j    p     v
 return "agmsybfhlnrtxzceikoquwdjpv"
 
+
+
 Q007(Easy): Reverse Integer
 Reverse digits of an integer.
 Example1:
 x = 123, return 321
 Example2:
 x = -123, return -321
+
+
 
 Q008(Easy): String to Integer (atoi)
 Implement atoi to convert a string to an integer.
@@ -96,10 +107,14 @@ no conversion is performed.
 4.If no valid conversion could be performed, a zero value is returned. 
 If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
 
+
+
 Q009(Easy): Palindrome Number
 Determine whether an integer is a palindrome. Do this without extra space.
 Some Examples:
 Number like 1,121,34543,345543
+
+
 
 Q010(Hard): Regular Expression Matching
 Implement regular expression matching with support for '.' and '*'.
@@ -116,3 +131,5 @@ isMatch("ab", ".*") → true
 isMatch("aab", "c*a*b") → true
 isMatch("aab", ".*a") → false
 isMatch("aab", ".*ab") → true
+
+
