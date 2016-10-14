@@ -24,7 +24,7 @@ public class Q016 {
 		Arrays.sort(array);
 		// 维护的最小值，第一次赋值数组的第1，2和最后一项与target的差值
 		int closest = Math.abs(target - (array[0] + array[1] + array[array.length - 1]));
-		// 将3Sum Closest的问题，转成n个2Sum Closest的问题
+		// 将3Sum Closest的问题，转成n-2个2Sum Closest的问题
 		// i是最后两项不用跑，因为数字不够了
 		for (int i = 0; i < array.length - 2; i++) {
 			// 剩余两个的下标，取头尾
