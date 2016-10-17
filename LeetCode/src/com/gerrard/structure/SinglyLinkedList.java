@@ -23,6 +23,7 @@ public class SinglyLinkedList<E> {
 	// 头结点定义
 	Node<E> head = new Node<>(null, null);
 
+	// 向链表最后，增加一个包含元素e的结点
 	public void add(E e) {
 		// 待增加的结点
 		Node<E> newNode = new Node<>(e, null);
@@ -88,7 +89,7 @@ public class SinglyLinkedList<E> {
 		size--;
 	}
 
-	// 获取指定index的Node
+	// 获取指定index的Node存放的element
 	public E get(int index) {
 		// 不做入参检查了
 		// 一开始赋值first
