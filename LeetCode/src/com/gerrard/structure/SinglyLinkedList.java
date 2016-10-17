@@ -91,8 +91,9 @@ public class SinglyLinkedList<E> {
 
 	// 获取指定index的Node存放的element
 	public E get(int index) {
-		// 不做入参检查了
-		// 一开始赋值first
+		// 先检查index
+		checkIndex(index);
+		// 当前结点值，一开始赋值first
 		Node<E> currentNode = first;
 		for (int i = 0; i < size; i++) {
 			if (i < index) {
@@ -109,5 +110,13 @@ public class SinglyLinkedList<E> {
 	// 获取链表大小
 	public int size() {
 		return size;
+	}
+
+	// 检查下标，超出下标抛异常
+	private void checkIndex(int index) {
+		if (index > size - 1 || index < 0) {
+			String errorMessage = "size=" + size + ";index=" + "index.";
+			throw new IndexOutOfBoundsException(errorMessage);
+		}
 	}
 }
