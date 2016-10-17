@@ -1,6 +1,6 @@
 package com.gerrard.structure;
 
-//单向链表
+// 带头结点的单向链表
 public class SinglyLinkedList<E> {
 	// 结点定义
 	private static class Node<E> {
@@ -20,16 +20,20 @@ public class SinglyLinkedList<E> {
 	// 第一个结点和最后一个结点
 	Node<E> last;
 	Node<E> first;
+	// 头结点定义
+	Node<E> head = new Node<>(null, null);
 
 	public void add(E e) {
 		// 待增加的结点
 		Node<E> newNode = new Node<>(e, null);
 		// 上一个结点
 		Node<E> preNode = last;
-		// 第一次增加结点的情况（不设计头结点的概念）
+		// 第一次增加结点的情况
 		if (last == null) {
 			// 将当前结点作为第一个结点
 			first = newNode;
+			// 头结点指针
+			head.next = first;
 		} else {
 			// 把上一个结点的next指针指向当前结点
 			preNode.next = newNode;
@@ -48,8 +52,10 @@ public class SinglyLinkedList<E> {
 				// 只有一个结点的情况
 				first = null;
 				last = null;
+				head.next = null;
 			} else {
-				// 不影响last
+				// 不影响last，但是要重新改变头结点的指针和first的值
+				head.next = first.next;
 				first = first.next;
 			}
 		} else {
