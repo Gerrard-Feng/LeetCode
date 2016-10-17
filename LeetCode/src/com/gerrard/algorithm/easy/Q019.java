@@ -19,6 +19,6 @@ public class Q019 {
 
 	private static void method(SinglyLinkedList<Integer> list, int nFromEnd) {
 		int index = list.size() - nFromEnd;
-		list.remove(index);
+		list.removeIndexOf(index);
 	}
 }
