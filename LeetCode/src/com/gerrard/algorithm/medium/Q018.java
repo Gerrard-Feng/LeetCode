@@ -44,19 +44,19 @@ public class Q018 {
 						continue;
 					}
 					int tempTarget = target - array[i];
-					// 秉承始终向后找的思想，下一项小于tempTarget，直接退出
+					// 秉承始终向后找的思想，下一项小于tempTarget，且下一项大于0，直接退出
 					// 而且tempTarget会越来越小，array[i+1]越来越大，再往后更加不可能了，直接返回
-					if (tempTarget < array[i + 1]) {
+					if (tempTarget < array[i + 1] && array[i + 1] > 0) {
 						return result;
-					} else {
-						int[] remainArray = Arrays.copyOfRange(array, i + 1, array.length);
-						int index = Arrays.binarySearch(remainArray, tempTarget);
-						if (index >= 0) {
-							int[] newArray = new int[2];
-							newArray[0] = array[i];
-							newArray[1] = remainArray[index];
-							result.add(newArray);
-						}
+					}
+					int[] remainArray = Arrays.copyOfRange(array, i + 1, array.length);
+					int index = Arrays.binarySearch(remainArray, tempTarget);
+					if (index >= 0) {
+						int[] newArray = new int[2];
+						newArray[0] = array[i];
+						newArray[1] = remainArray[index];
+						result.add(newArray);
+
 					}
 					lastNumber = array[i];
 				}
@@ -70,6 +70,9 @@ public class Q018 {
 					continue;
 				}
 				int tempTarget = target - array[i];
+				if (array[i + 1] > tempTarget && array[i + 1] > 0) {
+					return result;
+				}
 				// 开启递归
 				Set<int[]> tempResult = method(Arrays.copyOfRange(array, i + 1, array.length), tempTarget, kSum - 1);
 				for (int[] a : tempResult) {
