@@ -124,6 +124,39 @@ public class SinglyLinkedList<E> {
 		// 检查入参
 		checkIndex(index1);
 		checkIndex(index2);
+		// 无需交换的情况
+		if (index1 == index2) {
+			return;
+		}
+		// 保证i1<i2
+		int i1;
+		int i2;
+		if (index1 < index2) {
+			i1 = index1;
+			i2 = index2;
+		} else {
+			i1 = index2;
+			i2 = index1;
+		}
+		// 前一个结点，考虑头结点的特殊情况
+		Node<E> preNode1;
+		if (i1 == 0) {
+			preNode1 = head;
+		} else {
+			preNode1 = getNode(i1 - 1);
+		}
+		Node<E> preNode2 = getNode(i2 - 1);
+		// 当前结点（有preNode的情况下，不要用getNode()方法，影响效率）
+		Node<E> node1 = preNode1.next;
+		Node<E> node2 = preNode2.next;
+		// 交换媒介
+		Node<E> preTempNode = preNode2;
+		Node<E> nextTempNode = node2.next;
+		// 开始交换
+		node1.next = node2.next;
+		preNode2.next = node1;
+		 
+		
 
 	}
 
