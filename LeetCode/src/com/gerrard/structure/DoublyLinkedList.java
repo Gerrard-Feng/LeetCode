@@ -82,6 +82,13 @@ public class DoublyLinkedList<E> {
 		return currentNode.element;
 	}
 
+	// 设置指定index的element为给定值
+	public void set(int index, E e) {
+		checkIndex(index);
+		Node<E> node = getNode(index);
+		node.element = e;
+	}
+
 	// 获取链表大小
 	public int size() {
 		return size;

@@ -107,9 +107,24 @@ public class SinglyLinkedList<E> {
 		return currentNode.element;
 	}
 
+	// 设置指定index的element为给定值
+	public void set(int index, E e) {
+		checkIndex(index);
+		Node<E> node = getNode(index);
+		node.element = e;
+	}
+
 	// 获取链表大小
 	public int size() {
 		return size;
+	}
+
+	// 交换2个结点
+	public void swapNode(int index1, int index2) {
+		// 检查入参
+		checkIndex(index1);
+		checkIndex(index2);
+
 	}
 
 	// 检查下标，超出下标抛异常
@@ -118,5 +133,19 @@ public class SinglyLinkedList<E> {
 			String errorMessage = "size=" + size + ";index=" + index;
 			throw new IndexOutOfBoundsException(errorMessage);
 		}
+	}
+
+	// 获取指定index的结点
+	private Node<E> getNode(int index) {
+		// 没有必要检查index，因为是private方法，调用的地方会优先检查
+		Node<E> currentNode = first;
+		for (int i = 0; i < size; i++) {
+			if (i == index) {
+				break;
+			} else {
+				currentNode = currentNode.next;
+			}
+		}
+		return currentNode;
 	}
 }
