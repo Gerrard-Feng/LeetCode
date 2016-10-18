@@ -46,7 +46,7 @@ public class SinglyLinkedList<E> {
 
 	// 移除指定index的结点
 	public void removeIndexOf(int index) {
-		// 忽略入参检查
+		checkIndex(index);
 		// 是第一个结点的情况
 		if (index == 0) {
 			if (size == 1) {

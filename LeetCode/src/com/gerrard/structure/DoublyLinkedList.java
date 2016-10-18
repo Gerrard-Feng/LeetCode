@@ -47,7 +47,23 @@ public class DoublyLinkedList<E> {
 
 	// 移除指定index的结点
 	public void removeIndexOf(int index) {
-
+		checkIndex(index);
+		// 最后一项的特殊情况
+		if (index == size - 1) {
+			last = last.previous;
+			last.next = null;
+		} else {
+			// 正常情况
+			Node<E> currentNode = getNode(index);
+			currentNode.previous.next = currentNode.next;
+			currentNode.next.previous = currentNode.previous;
+			// 第一项的情况，会多改变一个first的值
+			if (index == 0) {
+				first = currentNode.next;
+			}
+			currentNode = null;
+		}
+		size--;
 	}
 
 	// 获取指定index的Node存放的element
@@ -77,5 +93,19 @@ public class DoublyLinkedList<E> {
 			String errorMessage = "size=" + size + ";index=" + "index.";
 			throw new IndexOutOfBoundsException(errorMessage);
 		}
+	}
+
+	// 获取指定index的结点
+	private Node<E> getNode(int index) {
+		// 没有必要检查index，因为是private方法，调用的地方会优先检查
+		Node<E> currentNode = first;
+		for (int i = 0; i < size; i++) {
+			if (i == index) {
+				break;
+			} else {
+				currentNode = currentNode.next;
+			}
+		}
+		return currentNode;
 	}
 }
