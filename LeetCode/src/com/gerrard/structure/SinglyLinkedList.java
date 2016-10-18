@@ -115,7 +115,7 @@ public class SinglyLinkedList<E> {
 	// 检查下标，超出下标抛异常
 	private void checkIndex(int index) {
 		if (index > size - 1 || index < 0) {
-			String errorMessage = "size=" + size + ";index=" + "index.";
+			String errorMessage = "size=" + size + ";index=" + index;
 			throw new IndexOutOfBoundsException(errorMessage);
 		}
 	}
