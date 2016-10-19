@@ -13,8 +13,8 @@ public class Q004 {
 		System.out.println(method3(array1Test1, array2Test1));
 
 		System.out.println("<==========第二组测试==========>");
-		int[] array1Test2 = new int[] { 1 };
-		int[] array2Test2 = new int[] { 3 };
+		int[] array1Test2 = new int[] { 1, 3 };
+		int[] array2Test2 = new int[] { 2 };
 		System.out.println(method1(array1Test2, array2Test2));
 		System.out.println(method2(array1Test2, array2Test2));
 		System.out.println(method3(array1Test2, array2Test2));
@@ -198,7 +198,7 @@ public class Q004 {
 			if (array1.length == 0) {
 				tempArray = array2;
 			} else {
-				tempArray = array2;
+				tempArray = array1;
 			}
 			// 直接返回单个有序数组的中位数，奇偶情况可以用一个式子表达
 			return (tempArray[tempArray.length / 2] + tempArray[(tempArray.length - 1) / 2]) / 2.0;
@@ -237,13 +237,8 @@ public class Q004 {
 			return method3(nextArray1, nextArray2);
 		} else {
 			// 存在2种情况：情况1.存在长度为1的数组；情况2.存在长度为2且中位数比较较小的那一方
-			// 先考虑情况2，包括部分情况1也适用
-			if (tempMedianMinArray.length == 2) {
-				// 小数组去最前的1位，大数组去最后的1位
-				int[] nextArray1 = Arrays.copyOfRange(tempMedianMinArray, 1, 2);
-				int[] nextArray2 = Arrays.copyOf(tempMedianMaxArray, tempMedianMaxArray.length - 1);
-				return method3(nextArray1, nextArray2);
-			} else {
+			// 先考虑情况1
+			if (tempMedianMinArray.length == 1 || tempMedianMaxArray.length == 1) {
 				// 情况1
 				// 两数组长度都为1，特殊考虑
 				if (tempMedianMinArray.length == 1 && tempMedianMaxArray.length == 1) {
@@ -282,6 +277,11 @@ public class Q004 {
 					}
 				}
 				return method3(tempArray1, tempArray2);
+			} else {
+				// 情况2
+				// 存在长度为2且中位数比较较小的那一方，另一个数组长度大于1
+				
+				return 0;
 			}
 		}
 	}
