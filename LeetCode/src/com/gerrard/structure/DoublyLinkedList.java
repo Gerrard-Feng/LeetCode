@@ -1,8 +1,21 @@
 package com.gerrard.structure;
 
-// 带头结点的双向链表
+/**
+ * 带头结点的双向链表
+ * 
+ * @author Administrator
+ *
+ * @param <E>
+ */
 public class DoublyLinkedList<E> {
-	// 结点定义
+
+	/**
+	 * 双向链表结点定义
+	 * 
+	 * @author Administrator
+	 *
+	 * @param <E>
+	 */
 	private static class Node<E> {
 		// 结点存的值
 		E element;
@@ -18,15 +31,21 @@ public class DoublyLinkedList<E> {
 		}
 	}
 
-	// 链表长度
+	/** 链表长度 */
 	private int size = 0;
-	// 第一个结点和最后一个结点
+
+	/** 第一个结点和最后一个结点 */
 	Node<E> last;
 	Node<E> first;
-	// 头结点定义
+
+	/** 头结点定义 */
 	Node<E> head = new Node<>(null, null, null);
 
-	// 向链表最后，增加一个包含元素e的结点
+	/**
+	 * 向链表最后，增加一个包含元素e的结点
+	 * 
+	 * @param e
+	 */
 	public void add(E e) {
 		// 新结点
 		Node<E> newNode = new Node<>(e, null, null);
@@ -45,7 +64,11 @@ public class DoublyLinkedList<E> {
 		size++;
 	}
 
-	// 移除指定index的结点
+	/**
+	 * 移除指定index的结点
+	 * 
+	 * @param index
+	 */
 	public void removeIndexOf(int index) {
 		checkIndex(index);
 		// 最后一项的特殊情况
@@ -66,30 +89,57 @@ public class DoublyLinkedList<E> {
 		size--;
 	}
 
-	// 获取指定index的Node存放的element
+	/**
+	 * 获取指定index的Node存放的element
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public E get(int index) {
 		// 先检查index
 		checkIndex(index);
-		// 当前结点值，一开始赋值first
-		Node<E> currentNode = first;
-		for (int i = 0; i < size; i++) {
-			if (i == index) {
-				break;
-			} else {
-				currentNode = currentNode.next;
+		Node<E> currentNode = null;
+		if (index < size / 2) {
+			// 当前结点值，一开始赋值first
+			currentNode = first;
+			for (int i = 0; i < size; i++) {
+				if (i == index) {
+					break;
+				} else {
+					currentNode = currentNode.next;
+				}
+			}
+		} else {
+			// index在靠后的位置，从last向前遍历
+			currentNode = last;
+			for (int i = 0; i < size; i++) {
+				if (i == size - 1 - index) {
+					break;
+				} else {
+					currentNode = currentNode.previous;
+				}
 			}
 		}
 		return currentNode.element;
 	}
 
-	// 设置指定index的element为给定值
+	/**
+	 * 设置指定index的element为给定值
+	 * 
+	 * @param index
+	 * @param e
+	 */
 	public void set(int index, E e) {
 		checkIndex(index);
 		Node<E> node = getNode(index);
 		node.element = e;
 	}
 
-	// 获取链表大小
+	/**
+	 * 获取链表大小
+	 * 
+	 * @return
+	 */
 	public int size() {
 		return size;
 	}
@@ -174,12 +224,24 @@ public class DoublyLinkedList<E> {
 	// 获取指定index的结点
 	private Node<E> getNode(int index) {
 		// 没有必要检查index，因为是private方法，调用的地方会优先检查
-		Node<E> currentNode = first;
-		for (int i = 0; i < size; i++) {
-			if (i == index) {
-				break;
-			} else {
-				currentNode = currentNode.next;
+		Node<E> currentNode = null;
+		if (index < size / 2) {
+			currentNode = first;
+			for (int i = 0; i < size; i++) {
+				if (i == index) {
+					break;
+				} else {
+					currentNode = currentNode.next;
+				}
+			}
+		} else {
+			currentNode = last;
+			for (int i = 0; i < size; i++) {
+				if (i == size - 1 - index) {
+					break;
+				} else {
+					currentNode = currentNode.previous;
+				}
 			}
 		}
 		return currentNode;

@@ -10,7 +10,7 @@ package com.gerrard.structure;
 public class SinglyLinkedList<E> {
 
 	/**
-	 * 结点定义
+	 * 单向链表结点定义
 	 * 
 	 * @author Administrator
 	 *
@@ -28,12 +28,14 @@ public class SinglyLinkedList<E> {
 		}
 	}
 
-	// 链表长度
+	/** 链表长度 */
 	private int size = 0;
-	// 第一个结点和最后一个结点
+
+	/** 第一个结点和最后一个结点 */
 	Node<E> last;
 	Node<E> first;
-	// 头结点定义
+
+	/** 头结点定义 */
 	Node<E> head = new Node<>(null, null);
 
 	/**
