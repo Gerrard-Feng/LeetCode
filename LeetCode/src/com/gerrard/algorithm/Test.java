@@ -19,6 +19,7 @@ public class Test {
 		List<Integer> list = new LinkedList<>();
 		list.add(1);
 		list.set(0, 2);
-		System.out.println(list.get(0));
+		list.addAll(list);
+		System.out.println(list.size());
 	}
 }
