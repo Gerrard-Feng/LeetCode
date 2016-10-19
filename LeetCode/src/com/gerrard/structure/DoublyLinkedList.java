@@ -94,6 +94,75 @@ public class DoublyLinkedList<E> {
 		return size;
 	}
 
+	/**
+	 * 交换链表两个结点的位置
+	 * 
+	 * @param index1
+	 * @param index2
+	 */
+	public void swapNode(int index1, int index2) {
+		// 先检查index
+		checkIndex(index1);
+		checkIndex(index2);
+		// 无需交换的情况
+		if (index1 == index2) {
+			return;
+		}
+		// 保证index1<index2
+		if (index1 > index2) {
+			int temp = index1;
+			index1 = index2;
+			index2 = temp;
+		}
+		// 确定2个结点
+		Node<E> node1 = getNode(index1);
+		// node2用getNode()方法从头找，浪费效率
+		Node<E> node2 = node1;
+		for (int i = 0; i < index2 - index1; i++) {
+			node2 = node2.next;
+		}
+		// 考虑first和last的变化，因为后续操作不需要first和last，可以先赋值
+		if (index1 == 0) {
+			first = node2;
+		}
+		if (index2 == size - 1) {
+			last = node1;
+		}
+		// 交换结点，相邻和不相邻断的指针个数是不一样的
+		if (index2 - index1 == 1) {
+			// 重新分配6次指针
+			Node<E> preNode = node1.previous;
+			Node<E> nextNode = node2.next;
+			// next指针
+			preNode.next = node2;
+			node2.next = node1;
+			node1.next = nextNode;
+			// previous指针
+			if (nextNode != null) {
+				// 考虑原来node2是最后一个结点的情况
+				nextNode.previous = node1;
+			}
+			node1.previous = node2;
+			node2.previous = preNode;
+		} else {
+			// 重新分配8次指针
+			Node<E> preNode1 = node1.previous;
+			Node<E> preNode2 = node2.previous;
+			Node<E> nextNode1 = node1.next;
+			Node<E> nextNode2 = node2.next;
+			// next指针
+			preNode1.next = node2;
+			node2.next = nextNode1;
+			preNode2.next = node1;
+			node1.next = nextNode2;
+			// previous指针
+			nextNode2.previous = node1;
+			node2.previous = preNode1;
+			nextNode1.previous = node2;
+			node1.previous = preNode2;
+		}
+	}
+
 	// 检查下标，超出下标抛异常
 	private void checkIndex(int index) {
 		if (index > size - 1 || index < 0) {

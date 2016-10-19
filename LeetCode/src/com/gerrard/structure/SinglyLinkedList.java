@@ -1,10 +1,23 @@
 package com.gerrard.structure;
 
-// 带头结点的单向链表
+/**
+ * 带头结点的单向链表
+ * 
+ * @author Administrator
+ *
+ * @param <E>
+ */
 public class SinglyLinkedList<E> {
-	// 结点定义
+
+	/**
+	 * 结点定义
+	 * 
+	 * @author Administrator
+	 *
+	 * @param <E>
+	 */
 	private static class Node<E> {
-		// 结点存的值
+		// 结点存的数据
 		E element;
 		// 指向下一个结点的指针
 		Node<E> next;
@@ -23,7 +36,11 @@ public class SinglyLinkedList<E> {
 	// 头结点定义
 	Node<E> head = new Node<>(null, null);
 
-	// 向链表最后，增加一个包含元素e的结点
+	/**
+	 * 在链表的最后一个结点之后，增加一个包含元素e的结点
+	 * 
+	 * @param e
+	 */
 	public void add(E e) {
 		// 待增加的结点
 		Node<E> newNode = new Node<>(e, null);
@@ -44,7 +61,11 @@ public class SinglyLinkedList<E> {
 		size++;
 	}
 
-	// 移除指定index的结点
+	/**
+	 * 移除指定index的结点
+	 * 
+	 * @param index
+	 */
 	public void removeIndexOf(int index) {
 		checkIndex(index);
 		// 是第一个结点的情况
@@ -60,19 +81,8 @@ public class SinglyLinkedList<E> {
 				first = first.next;
 			}
 		} else {
-			// 寻找上一个结点
-			Node<E> preNode = null;
-			Node<E> tempNode = first;
-			// 已经排除是第一个结点的情况，不存在index=0
-			for (int i = 0; i < size; i++) {
-				if (i == index - 1) {
-					preNode = tempNode;
-					// 找到就退出
-					break;
-				} else {
-					tempNode = tempNode.next;
-				}
-			}
+			// 上一个结点
+			Node<E> preNode = getNode(index - 1);
 			// 当前结点
 			Node<E> currentNode = preNode.next;
 			// 是最后一个结点的情况，不用考虑单结点的情况
@@ -89,7 +99,12 @@ public class SinglyLinkedList<E> {
 		size--;
 	}
 
-	// 获取指定index的Node存放的element
+	/**
+	 * 获取指定index的Node存放的element
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public E get(int index) {
 		// 先检查index
 		checkIndex(index);
@@ -107,57 +122,79 @@ public class SinglyLinkedList<E> {
 		return currentNode.element;
 	}
 
-	// 设置指定index的element为给定值
+	/**
+	 * 设置指定index的element为给定值e
+	 * 
+	 * @param index
+	 * @param e
+	 */
 	public void set(int index, E e) {
+		// 先检查index
 		checkIndex(index);
 		Node<E> node = getNode(index);
 		node.element = e;
 	}
 
-	// 获取链表大小
+	/**
+	 * @return 链表大小
+	 */
 	public int size() {
 		return size;
 	}
 
-	// 交换2个结点
+	/**
+	 * 交换链表两个结点的位置
+	 * 
+	 * @param index1
+	 * @param index2
+	 */
 	public void swapNode(int index1, int index2) {
-		// 检查入参
+		// 先检查index
 		checkIndex(index1);
 		checkIndex(index2);
 		// 无需交换的情况
 		if (index1 == index2) {
 			return;
 		}
-		// 保证i1<i2
-		int i1;
-		int i2;
-		if (index1 < index2) {
-			i1 = index1;
-			i2 = index2;
-		} else {
-			i1 = index2;
-			i2 = index1;
+		// 保证index1<index2
+		if (index1 > index2) {
+			int temp = index1;
+			index1 = index2;
+			index2 = temp;
 		}
 		// 前一个结点，考虑头结点的特殊情况
 		Node<E> preNode1;
-		if (i1 == 0) {
+		if (index1 == 0) {
 			preNode1 = head;
 		} else {
-			preNode1 = getNode(i1 - 1);
+			preNode1 = getNode(index1 - 1);
 		}
-		Node<E> preNode2 = getNode(i2 - 1);
+		Node<E> preNode2 = getNode(index2 - 1);
 		// 当前结点（有preNode的情况下，不要用getNode()方法，影响效率）
 		Node<E> node1 = preNode1.next;
 		Node<E> node2 = preNode2.next;
-		// 交换媒介
-		Node<E> preTempNode = preNode2;
-		Node<E> nextTempNode = node2.next;
-		// 开始交换
-		node1.next = node2.next;
-		preNode2.next = node1;
-		 
-		
-
+		// 考虑first和last的变化，因为后续操作不需要first和last，可以先赋值
+		if (index1 == 0) {
+			first = node2;
+		}
+		if (index2 == size - 1) {
+			last = node1;
+		}
+		if (index2 - index1 == 1) {
+			// 相邻结点，只需要断3次指针
+			node1.next = node2.next;
+			preNode1.next = node2;
+			node2.next = node1;
+		} else {
+			// 不相邻结点，需要断4次指针
+			Node<E> nextTempNode1 = node1.next;
+			// 交换node1
+			node1.next = node2.next;
+			preNode2.next = node1;
+			// 交换node2
+			preNode1.next = node2;
+			node2.next = nextTempNode1;
+		}
 	}
 
 	// 检查下标，超出下标抛异常
