@@ -22,10 +22,18 @@ public class Q020 {
 		System.out.println(isValid(g));
 	}
 
-	private static boolean isValid(String str) {
+	public static boolean isValid(String str) {
+		// 入参保护
+		if (str == null) {
+			return false;
+		}
 		// 0长度特殊处理
 		if (str.length() == 0) {
 			return true;
+		}
+		// 长度为奇数可以直接判断false
+		if (str.length() % 2 == 1) {
+			return false;
 		}
 		char[] array = str.toCharArray();
 		// 维护左括号的集合
