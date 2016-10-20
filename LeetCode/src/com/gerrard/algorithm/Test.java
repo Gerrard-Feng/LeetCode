@@ -15,7 +15,7 @@ public class Test {
 		set.add(a);
 		set.add(b);
 		System.out.println(set.size());
-		
+
 		List<Integer> list = new LinkedList<>();
 		list.add(1);
 		list.set(0, 2);
