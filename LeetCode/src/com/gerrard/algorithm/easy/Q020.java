@@ -13,16 +13,16 @@ public class Q020 {
 		String e = "(a)";
 		String f = "{}[]()";
 		String g = "{{[(())]}}[]";
-		System.out.println(method(a));
-		System.out.println(method(b));
-		System.out.println(method(c));
-		System.out.println(method(d));
-		System.out.println(method(e));
-		System.out.println(method(f));
-		System.out.println(method(g));
+		System.out.println(isValid(a));
+		System.out.println(isValid(b));
+		System.out.println(isValid(c));
+		System.out.println(isValid(d));
+		System.out.println(isValid(e));
+		System.out.println(isValid(f));
+		System.out.println(isValid(g));
 	}
 
-	private static boolean method(String str) {
+	private static boolean isValid(String str) {
 		// 0长度特殊处理
 		if (str.length() == 0) {
 			return true;
@@ -54,7 +54,7 @@ public class Q020 {
 					// 匹配之后，去掉leftList的最后一项
 					if (getDirection(last) == -getDirection(array[i]) && getLevel(last) == getLevel(array[i])) {
 						leftList.remove(leftList.size() - 1);
-					}else{
+					} else {
 						return false;
 					}
 				}
