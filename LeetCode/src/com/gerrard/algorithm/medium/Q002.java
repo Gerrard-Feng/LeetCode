@@ -1,50 +1,75 @@
 package com.gerrard.algorithm.medium;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
 public class Q002 {
 
 	public static void main(String[] args) {
 
-		List<Integer> list1 = new LinkedList<>();
-		list1.add(2);
-		list1.add(4);
-		list1.add(3);
-		List<Integer> list2 = new LinkedList<>();
-		list2.add(5);
-		list2.add(6);
-		list2.add(4);
-		List<Integer> list = method(list1, list2);
-		for (int a : list) {
-			System.out.print(a + " ");
+		System.out.println("<==========第一组测试==========>");
+		ListNode l1Test1 = new ListNode(2);
+		l1Test1.next = new ListNode(4);
+		l1Test1.next.next = new ListNode(3);
+		ListNode l2Test1 = new ListNode(5);
+		l2Test1.next = new ListNode(6);
+		l2Test1.next.next = new ListNode(4);
+		show(addTwoNumbers(l1Test1, l2Test1));
+
+		System.out.println("<==========第二组测试==========>");
+		ListNode l1Test2 = new ListNode(1);
+		l1Test2.next = new ListNode(8);
+		ListNode l2Test2 = new ListNode(0);
+		show(addTwoNumbers(l1Test2, l2Test2));
+
+		System.out.println("<==========第三组测试==========>");
+		ListNode l1Test3 = new ListNode(5);
+		ListNode l2Test3 = new ListNode(5);
+		show(addTwoNumbers(l1Test3, l2Test3));
+	}
+
+	public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+		// 头结点
+		ListNode head = new ListNode(0), operNode = head;
+		// 进位标志
+		int carry = 0;
+		while (l1 != null || l2 != null) {
+			int num1 = l1 == null ? 0 : l1.val;
+			int num2 = l2 == null ? 0 : l2.val;
+			int sum = num1 + num2 + carry;
+			operNode.next = new ListNode(sum % 10);
+			carry = sum / 10;
+			operNode = operNode.next;
+			l1 = l1 == null ? null : l1.next;
+			l2 = l2 == null ? null : l2.next;
+		}
+		// 最后一次相加之后判断标志位
+		if (carry == 1) {
+			operNode.next = new ListNode(1);
+		}
+		return head.next;
+	}
+
+	/**
+	 * 单向链表结点
+	 * 
+	 * @author Administrator
+	 *
+	 */
+	private static class ListNode {
+		int val;
+		ListNode next;
+
+		ListNode(int x) {
+			val = x;
 		}
 	}
 
-	private static List<Integer> method(List<Integer> list1, List<Integer> list2) {
-		int sum1 = 0;
-		int sum2 = 0;
-		int size1 = list1.size();
-		int size2 = list2.size();
-		// 声明2个ListIterator，可以逆向迭代，指针位置先给到最后一位
-		ListIterator<Integer> iter1 = list1.listIterator(size1);
-		ListIterator<Integer> iter2 = list2.listIterator(size2);
-		// 逆序遍历+累加
-		while (iter1.hasPrevious()) {
-			sum1 += iter1.previous() * Math.pow(10, --size1);
+	private static void show(ListNode node) {
+		while (node != null) {
+			System.out.print(node.val);
+			if (node.next != null) {
+				System.out.print("->");
+			}
+			node = node.next;
 		}
-		while (iter2.hasPrevious()) {
-			sum2 += iter2.previous() * Math.pow(10, --size2);
-		}
-		int sum = sum1 + sum2;
-		List<Integer> resultList = new LinkedList<>();
-		while (sum > 0) {
-			// 取末尾
-			resultList.add(sum % 10);
-			// 去末尾
-			sum /= 10;
-		}
-		return resultList;
+		System.out.println();
 	}
 }
