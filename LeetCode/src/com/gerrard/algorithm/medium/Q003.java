@@ -1,53 +1,56 @@
 package com.gerrard.algorithm.medium;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Q003 {
 
 	public static void main(String[] args) {
-		String str = "abbaabc";
-		System.out.println(method(str));
+
+		System.out.println("<==========第一组测试==========>");
+		String s1 = "abcabcbb";
+		System.out.println(lengthOfLongestSubstring(s1));
+
+		System.out.println("<==========第二组测试==========>");
+		String s2 = "dvdf";
+		System.out.println(lengthOfLongestSubstring(s2));
+
+		System.out.println("<==========第三组测试==========>");
+		String s3 = "bbbbb";
+		System.out.println(lengthOfLongestSubstring(s3));
+
+		System.out.println("<==========第四组测试==========>");
+		String s4 = "pwwkew";
+		System.out.println(lengthOfLongestSubstring(s4));
 	}
 
-	private static String method(String str) {
+	public static int lengthOfLongestSubstring(String s) {
+		if (s == null) {
+			throw new IllegalArgumentException("Input error");
+		}
+		char[] charArray = s.toCharArray();
 		int maxLength = 0;
-		// 结果集
-		StringBuffer result = new StringBuffer();
-		StringBuffer temp = new StringBuffer();
-		String tempStr;
-		for (int i = 0; i < str.length(); i++) {
-			tempStr = str.substring(i, i + 1);
-			// 不存在重复
-			if (!isExist(temp, tempStr)) {
-				temp.append(tempStr);
-			} else {
-				// 遇到重复，比较最大长度
-				if (temp.length() > maxLength) {
-					// temp超过最大长度，保存结果
-					maxLength = temp.length();
-					result = temp;
+		List<Character> list = new ArrayList<>();
+		for (int i = 0; i < charArray.length; i++) {
+			Character c = charArray[i];
+			// 判断当前字符是否重复
+			if (list.contains(c)) {
+				// 更新最大长度
+				maxLength = list.size() > maxLength ? list.size() : maxLength;
+				// 删除重复之前的字符
+				int lastIndex = list.indexOf(c);
+				// lastIndex+1 代表删除次数
+				while (lastIndex + 1 > 0) {
+					list.remove(0);
+					lastIndex--;
 				}
-				// 无论超过与否，都要重置temp，temp的值是当前的判断到重复的字符串
-				temp = new StringBuffer(tempStr);
-				continue;
-			}
-			// 特殊情况考虑：最长字符串在原字符串尾部
-			if (i == str.length() - 1) {
-				if (temp.length() > maxLength) {
-					// 最后一个，没必要给maxLength赋值了，虽然这个值错了
-					result = temp;
-				}
-			}
-		}
-		return result.toString();
-	}
 
-	// 判断check字符，是否存在于sb字段中
-	private static boolean isExist(StringBuffer sb, String check) {
-		for (int i = 0; i < sb.length(); i++) {
-			if (sb.substring(i, i + 1).equals(check)) {
-				// true表示存在重复
-				return true;
 			}
+			// 当前字符是一定要加的
+			list.add(c);
 		}
-		return false;
+		// 特殊情况考虑：最长字符串在原字符串尾部
+		maxLength = list.size() > maxLength ? list.size() : maxLength;
+		return maxLength;
 	}
 }
