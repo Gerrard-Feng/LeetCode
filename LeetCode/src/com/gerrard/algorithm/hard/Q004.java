@@ -215,80 +215,56 @@ public class Q004 {
 	// 不需要重组整个数组，只需要重组一半，时间复杂度是O((m+n)/2)
 	private static double method2(int[] array1, int[] array2) {
 		final int LENGTH = array1.length + array2.length;
+		// 中位数的索引
+		int targetIndex1 = (LENGTH - 1) / 2;
+		int targetIndex2 = LENGTH / 2;
+		// 结果
+		int result = 0;
+		boolean flag = false;
 		// 数组当前位置索引
 		int index1 = 0;
 		int index2 = 0;
-		int[] tempArray = null;
-		int tempIndex = 0;
-		int result = 0;
-		// 遍历至一半即可
-		for (int i = 0; i < LENGTH / 2 + 1; i++) {
-			if (tempArray == null) {
-				// 优先判断其中一个数组已经被掏空的情况
-				// 特别注意，掏空的时候index会比最后的index+1
-				if (index1 == array1.length || index2 == array2.length) {
-					// 索引累加
-					if (index1 == array1.length) {
-						tempArray = array2;
-						tempIndex = index2;
-					} else {
-						tempArray = array1;
-						tempIndex = index1;
-					}
-					// 当一个数组用完，index这正好处于中位数运算时，需要累加当前值
-					if (LENGTH % 2 == 0) {
-						if (i == LENGTH / 2 - 1 || i == LENGTH / 2) {
-							result += tempArray[tempIndex];
-						}
-					} else {
-						if (i == LENGTH / 2) {
-							result += 2 * tempArray[tempIndex];
-						}
-					}
-					tempIndex++;
-					// 这个continue是必要的，赋值之后，直接下一次循环
-					continue;
-				}
-				// 两个数组都有剩余的情况
-				if (array1[index1] < array2[index2]) {
-					// 偶数长度，i=LENGTH/2-1和i=LENGTH/2的平均数
-					if (LENGTH % 2 == 0) {
-						if (i == LENGTH / 2 - 1 || i == LENGTH / 2) {
-							result += array1[index1];
-						}
-					} else {
-						// 奇数长度，i=LENGTH/2
-						if (i == LENGTH / 2) {
-							result += 2 * array1[index1];
-						}
-					}
-					index1++;
+		// 当前操作数组及索引
+		int[] currentArray;
+		int currentIndex;
+		// 开启循环
+		for (int i = 0; i < LENGTH; i++) {
+			// 某一数组遍历结束
+			if (index1 == array1.length || index2 == array2.length) {
+				int[] remain, exhaust;
+				if (index1 == array1.length) {
+					remain = array2;
+					exhaust = array1;
 				} else {
-					if (LENGTH % 2 == 0) {
-						if (i == LENGTH / 2 - 1 || i == LENGTH / 2) {
-							result += array2[index2];
-						}
-					} else {
-						// 奇数长度，i=LENGTH/2
-						if (i == LENGTH / 2) {
-							result += 2 * array2[index2];
-						}
-					}
-					index2++;
+					remain = array1;
+					exhaust = array2;
 				}
+				if (!flag) {
+					// 中位数在之后，可以直接计算
+					return (remain[(LENGTH - 1) / 2 - exhaust.length] + remain[LENGTH / 2 - exhaust.length]) / 2.0;
+				} else {
+					// 偶数位的总长度，且result已经加过一次
+					return (result + remain[i - exhaust.length]) / 2.0;
+				}
+			}
+			// 索引自增，当前操作数组及索引赋值
+			if (array1[index1] < array2[index2]) {
+				currentArray = array1;
+				currentIndex = index1;
+				index1++;
 			} else {
-				// 操作tempArray
-				if (LENGTH % 2 == 0) {
-					if (i == LENGTH / 2 - 1 || i == LENGTH / 2) {
-						result += tempArray[tempIndex];
-					}
-				} else {
-					// 奇数长度，i=LENGTH/2
-					if (i == LENGTH / 2) {
-						result += 2 * tempArray[tempIndex];
-					}
-				}
-				tempIndex++;
+				currentArray = array2;
+				currentIndex = index2;
+				index2++;
+			}
+			// 结果赋值，奇偶长度统一
+			if (i == targetIndex1) {
+				flag = true;
+				result += currentArray[currentIndex];
+			}
+			if (i == targetIndex2) {
+				result += currentArray[currentIndex];
+				break;
 			}
 		}
 		return result / 2.0;
