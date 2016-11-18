@@ -10,73 +10,163 @@ public class Q004 {
 		int[] array2Test1 = new int[] { 3, 4, 6, 7, 10, 11, 12, 13, 14 };
 		System.out.println(method1(array1Test1, array2Test1));
 		System.out.println(method2(array1Test1, array2Test1));
-		System.out.println(method3(array1Test1, array2Test1));
+		System.out.println(findMedianSortedArrays(array1Test1, array2Test1));
 
 		System.out.println("<==========第二组测试==========>");
 		int[] array1Test2 = new int[] { 1, 3 };
 		int[] array2Test2 = new int[] { 2 };
 		System.out.println(method1(array1Test2, array2Test2));
 		System.out.println(method2(array1Test2, array2Test2));
-		System.out.println(method3(array1Test2, array2Test2));
+		System.out.println(findMedianSortedArrays(array1Test2, array2Test2));
 
 		System.out.println("<==========第三组测试==========>");
 		int[] array1Test3 = new int[] { 1, 2, 3, 4, 5 };
 		int[] array2Test3 = new int[] { 6 };
 		System.out.println(method1(array1Test3, array2Test3));
 		System.out.println(method2(array1Test3, array2Test3));
-		System.out.println(method3(array1Test3, array2Test3));
+		System.out.println(findMedianSortedArrays(array1Test3, array2Test3));
 
 		System.out.println("<==========第四组测试==========>");
 		int[] array1Test4 = new int[] { 2 };
 		int[] array2Test4 = new int[] {};
 		System.out.println(method1(array1Test4, array2Test4));
 		System.out.println(method2(array1Test4, array2Test4));
-		System.out.println(method3(array1Test4, array2Test4));
+		System.out.println(findMedianSortedArrays(array1Test4, array2Test4));
 
 		System.out.println("<==========第五组测试==========>");
 		int[] array1Test5 = new int[] {};
 		int[] array2Test5 = new int[] { 5, 7, 9, 10 };
 		System.out.println(method1(array1Test5, array2Test5));
 		System.out.println(method2(array1Test5, array2Test5));
-		System.out.println(method3(array1Test5, array2Test5));
+		System.out.println(findMedianSortedArrays(array1Test5, array2Test5));
 
 		System.out.println("<==========第六组测试==========>");
 		int[] array1Test6 = new int[] { 1, 5, 6, 8 };
 		int[] array2Test6 = new int[] { 2, 3, 4, 7, 9, 10 };
 		System.out.println(method1(array1Test6, array2Test6));
 		System.out.println(method2(array1Test6, array2Test6));
-		System.out.println(method3(array1Test6, array2Test6));
+		System.out.println(findMedianSortedArrays(array1Test6, array2Test6));
 
 		System.out.println("<==========第七组测试==========>");
 		int[] array1Test7 = new int[] { 3, 4 };
 		int[] array2Test7 = new int[] { 1, 2, 5, 6 };
 		System.out.println(method1(array1Test7, array2Test7));
 		System.out.println(method2(array1Test7, array2Test7));
-		System.out.println(method3(array1Test7, array2Test7));
+		System.out.println(findMedianSortedArrays(array1Test7, array2Test7));
 
 		System.out.println("<==========第八组测试==========>");
 		int[] array1Test8 = new int[] { 1, 1 };
 		int[] array2Test8 = new int[] { 1, 2 };
 		System.out.println(method1(array1Test8, array2Test8));
 		System.out.println(method2(array1Test8, array2Test8));
-		System.out.println(method3(array1Test8, array2Test8));
+		System.out.println(findMedianSortedArrays(array1Test8, array2Test8));
 
 		System.out.println("<==========第九组测试==========>");
 		int[] array1Test9 = new int[] { 1, 4 };
 		int[] array2Test9 = new int[] { 2, 3 };
 		System.out.println(method1(array1Test9, array2Test9));
 		System.out.println(method2(array1Test9, array2Test9));
-		System.out.println(method3(array1Test9, array2Test9));
+		System.out.println(findMedianSortedArrays(array1Test9, array2Test9));
 
 		System.out.println("<==========第十组测试==========>");
 		int[] array1Test10 = new int[] { 2, 3 };
 		int[] array2Test10 = new int[] { 1 };
 		System.out.println(method1(array1Test10, array2Test10));
 		System.out.println(method2(array1Test10, array2Test10));
-		System.out.println(method3(array1Test10, array2Test10));
+		System.out.println(findMedianSortedArrays(array1Test10, array2Test10));
 	}
 
-	// 这个的时间复杂度是O(m+n)
+	// 因为两数组分别有序，用类二分查找法寻找中位数，时间复杂度O(log(m+n))
+	public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+		// 入参校验
+		if (nums1 == null || nums2 == null || nums1.length + nums2.length == 0) {
+			throw new IllegalArgumentException("Input error");
+		}
+		// 特殊情况：一个数组长度为0
+		if (nums1.length == 0 || nums2.length == 0) {
+			int[] array = nums1.length == 0 ? nums2 : nums1;
+			return (array[array.length / 2] + array[(array.length - 1) / 2]) / 2.0;
+		}
+		// 中位数
+		int median1 = nums1[(nums1.length - 1) / 2];
+		int median2 = nums2[(nums2.length - 1) / 2];
+		// 特殊情况：两个数组的中位数相同
+		if (median1 == median2) {
+			// 两数组长度为奇数
+			if (nums1.length % 2 == 1 && nums2.length % 2 == 1) {
+				return median1;
+			}
+			// 两数组长度为偶数
+			if (nums1.length % 2 == 0 && nums2.length % 2 == 0) {
+				return (median1 + Math.min(nums1[nums1.length / 2], nums2[nums2.length / 2])) / 2.0;
+			}
+			// 一奇一偶，就是偶数长度数组的中位数
+			int[] array = nums1.length % 2 == 0 ? nums1 : nums2;
+			return (median1 + array[array.length / 2]) / 2.0;
+		}
+		// 特殊情况：一个数组长度为1
+		if (nums1.length == 1 || nums2.length == 1) {
+			int[] array1, array2;
+			if (nums1.length == 1) {
+				array1 = nums1;
+				array2 = nums2;
+			} else {
+				array1 = nums2;
+				array2 = nums1;
+			}
+			// 特殊情况：另一个数组的长度也为1
+			if (array2.length == 1) {
+				return (array1[0] + array2[0]) / 2.0;
+			}
+			// 特殊情况：两个数组的中位数计算，包含长度为1的数组的值
+			if (array2.length % 2 == 0) {
+				if (array1[0] >= array2[(array2.length - 1) / 2] && array1[0] <= array2[array2.length / 2]) {
+					return array1[0];
+				}
+			} else {
+				if (array1[0] < array2[array2.length / 2] && array1[0] > array2[array2.length / 2 - 1]) {
+					return (array1[0] + array2[array2.length / 2]) / 2.0;
+				}
+				if (array1[0] > array2[array2.length / 2] && array1[0] < array2[array2.length / 2 + 1]) {
+					return (array1[0] + array2[array2.length / 2]) / 2.0;
+				}
+			}
+			// 将array1长度降为0，进入下一次递归
+			if (array1[0] > array2[array2.length / 2]) {
+				return findMedianSortedArrays(new int[0], Arrays.copyOfRange(array2, 1, array2.length));
+			} else {
+				return findMedianSortedArrays(new int[0], Arrays.copyOf(array2, array2.length - 1));
+			}
+		}
+		// 中位数大的数组是array1
+		int[] array1, array2;
+		if (median1 > median2) {
+			array1 = nums1;
+			array2 = nums2;
+		} else {
+			array1 = nums2;
+			array2 = nums1;
+		}
+		// 特殊情况：两个数组的中位数，就是array1的中位数
+		// 只有在两个偶数长度的数组的情况下，才能实现
+		if (array1.length % 2 == 0 && array2.length % 2 == 0) {
+			if (array1[array1.length / 2] <= array2[array2.length / 2]) {
+				return (array1[(array1.length - 1) / 2] + array1[array1.length / 2]) / 2.0;
+			}
+		}
+		int reduce1 = array1.length / 2;
+		int reduce2 = (array2.length - 1) / 2;
+		// 特殊情况：array2的长度为2
+		if (reduce2 == 0) {
+			return findMedianSortedArrays(Arrays.copyOf(array1, array1.length - 1), new int[] { array2[1] });
+		}
+		int reduce = Math.min(reduce1, reduce2);
+		// 削去数组递归
+		return findMedianSortedArrays(Arrays.copyOf(array1, array1.length - reduce),
+				Arrays.copyOfRange(array2, reduce, array2.length));
+	}
+
+	// 将两个数组合并成新数组取中位数，时间复杂度是O(m+n)
 	private static double method1(int[] array1, int[] array2) {
 		final int LENGTH = array1.length + array2.length;
 		int[] resultArray = new int[LENGTH];
@@ -202,163 +292,5 @@ public class Q004 {
 			}
 		}
 		return result / 2.0;
-	}
-
-	// 因为两数组分别有序，用类二分查找法寻找中位数，时间复杂度O(log(m+n))
-	private static double method3(int[] array1, int[] array2) {
-
-		int length1 = array1.length;
-		int length2 = array2.length;
-
-		// 优先判断，一个数组用完的情况
-		if (length1 == 0 || length2 == 0) {
-			int[] tempArray;
-			if (length1 == 0) {
-				tempArray = array2;
-			} else {
-				tempArray = array1;
-			}
-			// 直接返回单个有序数组的中位数，奇偶情况可以用一个式子表达
-			return (tempArray[tempArray.length / 2] + tempArray[(tempArray.length - 1) / 2]) / 2.0;
-		}
-
-		// 两个数组都存在的情况
-		int medianIndex1 = (length1 - 1) / 2;
-		int medianIndex2 = (length2 - 1) / 2;
-
-		// 两数组中位数相等可以直接得出结果，特殊讨论
-		// 不能放到后面统一做，不仅是效率的问题
-		// 因为形如[1,2]和[1,1]，入参的顺序不一样处理方式也不一样，会得出不一样的结果
-		if (array1[medianIndex1] == array2[medianIndex2]) {
-			// 长度均为奇数，直接返回中位数
-			// 形如[1,3,5]和[1,2,3,4,5]
-			if (length1 % 2 == 1 && length2 % 2 == 1) {
-				return array1[medianIndex1];
-			}
-			// 存在1个偶数长度，一个奇数长度的情况
-			// 形如[2,3,4]和[2,3,5,5]
-			if (length1 % 2 == 0 ^ length2 % 2 == 0) {
-				int[] evenArray = null;
-				int evenIndex = -1;
-				if (length1 % 2 == 0) {
-					evenArray = array1;
-					evenIndex = medianIndex1;
-				} else {
-					evenArray = array2;
-					evenIndex = medianIndex2;
-				}
-				return (evenArray[evenIndex] + evenArray[evenIndex + 1]) / 2.0;
-			}
-			// 两个全是偶数长度的情况
-			// 形如[2,3,4,5]和[3,3]
-			int min = Math.min(array1[medianIndex1 + 1], array2[medianIndex2 + 1]);
-			return (array1[medianIndex1] + min) / 2.0;
-		}
-
-		// 操作数组统一赋值
-		int[] tempMedianMinArray;
-		int[] tempMedianMaxArray;
-		// 操作数组中位数索引标志
-		int minIndex;
-		int maxIndex;
-		// 两数组统一赋值处理
-		if (array1[medianIndex1] < array2[medianIndex2]) {
-			tempMedianMinArray = array1;
-			tempMedianMaxArray = array2;
-			minIndex = medianIndex1;
-			maxIndex = medianIndex2;
-		} else {
-			tempMedianMinArray = array2;
-			tempMedianMaxArray = array1;
-			minIndex = medianIndex2;
-			maxIndex = medianIndex1;
-		}
-
-		// 有一种特殊的情况[1,5,6,8]和[2,3,4,7,9,10]->[1,5,6]和[3,4,7,9,10]是错误的
-		if (length1 % 2 == 0 && length2 % 2 == 0) {
-			// 中位数较大的数组，被另一个数组完全包起来了
-			if (tempMedianMaxArray[maxIndex + 1] < tempMedianMinArray[minIndex + 1]) {
-				return (tempMedianMaxArray[maxIndex] + tempMedianMaxArray[maxIndex + 1]) / 2.0;
-			}
-		}
-
-		// 要去掉的数组赋值
-		int[] arrayToReduceFromBegin = Arrays.copyOf(tempMedianMinArray, minIndex);
-		// 这里分奇偶，不能通过maxIndex定义要去掉的数组开始位置（tempMedianMaxArray.length-maxIndex是错的）
-		int[] arrayToReduceToEnd = Arrays.copyOfRange(tempMedianMaxArray, (tempMedianMaxArray.length + 1) / 2,
-				tempMedianMaxArray.length);
-		// 要去掉的数组长度不为0
-		if (!(arrayToReduceFromBegin.length == 0 || arrayToReduceToEnd.length == 0)) {
-			// 两数组每次减去的数组长度必须相同
-			int reduceLength = Math.min(arrayToReduceFromBegin.length, arrayToReduceToEnd.length);
-			int[] nextArray1 = Arrays.copyOfRange(tempMedianMinArray, reduceLength, tempMedianMinArray.length);
-			int[] nextArray2 = Arrays.copyOf(tempMedianMaxArray, tempMedianMaxArray.length - reduceLength);
-			return method3(nextArray1, nextArray2);
-		} else {
-			// 存在2种情况：情况1.存在长度为1的数组；情况2.存在长度为2且中位数比较较小的那一方
-			// 先考虑情况1
-			if (tempMedianMinArray.length == 1 || tempMedianMaxArray.length == 1) {
-				// 情况1
-				// 两数组长度都为1，特殊考虑
-				if (tempMedianMinArray.length == 1 && tempMedianMaxArray.length == 1) {
-					return (tempMedianMinArray[0] + tempMedianMaxArray[0]) / 2.0;
-				}
-				// 统一操作赋值
-				int[] tempArray1;
-				int[] tempArray2;
-				if (tempMedianMinArray.length == 1) {
-					tempArray1 = tempMedianMinArray;
-					tempArray2 = tempMedianMaxArray;
-				} else {
-					tempArray1 = tempMedianMaxArray;
-					tempArray2 = tempMedianMinArray;
-				}
-				// 之后有4种情况
-				if (tempArray1[0] < tempArray2[tempArray2.length / 2]) {
-					if (tempArray1[0] < tempArray2[0]) {
-						// 形如[1]和[6,7,8]->[]和[6,7]
-						tempArray1 = new int[0];
-						// 去尾
-						tempArray2 = Arrays.copyOf(tempArray2, tempArray2.length - 1);
-					} else {
-						// 形如[7]和[6,8,9]->[7]和[8]
-						tempArray2 = Arrays.copyOfRange(tempArray2, 1, tempArray2.length - 1);
-					}
-				} else {
-					if (tempArray1[0] > tempArray2[tempArray2.length - 1]) {
-						// 形如[9]和[6,7,8]->[]和[7,8]
-						tempArray1 = new int[0];
-						// 去头
-						tempArray2 = Arrays.copyOfRange(tempArray2, 1, tempArray2.length);
-					} else {
-						// 形如[8]和[6,7,9]->[8]和[7]
-						tempArray2 = Arrays.copyOfRange(tempArray2, 1, tempArray2.length - 1);
-					}
-				}
-				return method3(tempArray1, tempArray2);
-			} else {
-				// 情况2
-				// 存在长度为2且中位数比较较小的那一方，另一个数组长度大于1
-				int[] tempArray1;
-				int[] tempArray2;
-				// 之后有3种情况
-				// 形如[1,3]和[3,4,5]->[3]和[3,4]
-				if (tempMedianMaxArray[maxIndex] >= tempMedianMinArray[1]) {
-					tempArray1 = Arrays.copyOfRange(tempMedianMinArray, 1, 2);
-					tempArray2 = Arrays.copyOf(tempMedianMaxArray, tempMedianMaxArray.length - 1);
-				} else {
-					// 形如[1,8]和[2,4,5,6,8]->[]和[2,4,5,6,8]
-					if (tempMedianMaxArray[tempMedianMaxArray.length - 1] <= tempMedianMinArray[1]) {
-						tempArray1 = new int[0];
-						tempArray2 = tempMedianMaxArray;
-					} else {
-						// 形如[1,7]和[2,4,5,8,9]->[7]和[2,4,5,8]
-						tempArray1 = Arrays.copyOfRange(tempMedianMinArray, 1, 2);
-						tempArray2 = Arrays.copyOf(tempMedianMaxArray, tempMedianMaxArray.length - 1);
-					}
-				}
-				return method3(tempArray1, tempArray2);
-			}
-		}
 	}
 }
