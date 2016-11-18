@@ -36,7 +36,7 @@ public class Q003 {
 			// 判断当前字符是否重复
 			if (list.contains(c)) {
 				// 更新最大长度
-				maxLength = list.size() > maxLength ? list.size() : maxLength;
+				maxLength = Math.max(maxLength, list.size());
 				// 删除重复之前的字符
 				int lastIndex = list.indexOf(c);
 				// lastIndex+1 代表删除次数
@@ -50,7 +50,7 @@ public class Q003 {
 			list.add(c);
 		}
 		// 特殊情况考虑：最长字符串在原字符串尾部
-		maxLength = list.size() > maxLength ? list.size() : maxLength;
+		maxLength = Math.max(maxLength, list.size());
 		return maxLength;
 	}
 }
