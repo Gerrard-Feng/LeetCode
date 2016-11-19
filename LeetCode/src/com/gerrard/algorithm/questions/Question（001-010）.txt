@@ -69,12 +69,6 @@ c   g   k   o   s   w
 d f     l n     t v
 e       m       u
 return "aiqybhjprxzcgkoswdflntvemu"
-Example3:
-a     g    m     s     y
-b   f h  l n   r t   x z
-c e   i k  o q   u w
-d     j    p     v
-return "agmsybfhlnrtxzceikoquwdjpv"
 
 
 
