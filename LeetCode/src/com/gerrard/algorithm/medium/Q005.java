@@ -6,89 +6,56 @@ public class Q005 {
 
 		System.out.println("<==========第一组测试==========>");
 		String str1 = "cabcbaabcaaaaaaa";
-		int[] resultArray1 = method(str1);
-		int startIndex1 = resultArray1[0];
-		int length1 = resultArray1[1];
-		System.out.println(str1.substring(startIndex1, startIndex1 + length1));
+		System.out.println(longestPalindrome(str1));
 
 		System.out.println("<==========第二组测试==========>");
 		String str2 = "cbaabc";
-		int[] resultArray2 = method(str2);
-		int startIndex2 = resultArray2[0];
-		int length2 = resultArray2[1];
-		System.out.println(str2.substring(startIndex2, startIndex2 + length2));
+		System.out.println(longestPalindrome(str2));
 	}
 
-	// 返回一个长度为2的数组，第一位是startIndex，第二位是length
-	private static int[] method(String str) {
-		// str.split("")方法生成的字符串，长度+1，第一个是空字符串
-		char[] array = str.toCharArray();
+	public static String longestPalindrome(String s) {
+		if (s == null || s.length() > 1000) {
+			throw new IllegalArgumentException("Input error");
+		}
+		char[] array = s.toCharArray();
+		// 最大回文子串长度和其开始位置索引
 		int maxLength = 0;
 		int startIndex = 0;
-		// 循环中使用，先声明
-		int count1;
-		int count2;
 		for (int i = 0; i < array.length; i++) {
 			// 超过字符串一半之后，理论上可能达到的最大长度小于当前的最大长度，直接退出循环
 			if (i > (array.length - 1) / 2 && 2 * (array.length - 1 - i) + 1 < maxLength) {
 				break;
 			}
-			count1 = singleCore(i, array);
-			count2 = doubleCore(i, array);
-			// 存在超过最大长度的情况
-			if (count1 > maxLength || count2 > maxLength) {
-				// 不存在相等情况
-				if (count1 > count2) {
-					// 单核
-					maxLength = count1;
-					startIndex = i - (count1 - 1) / 2;
-				} else {
-					// 双核
-					maxLength = count2;
-					startIndex = i + 1 - (count2 / 2);
-				}
+			// 分奇偶计算回文长度
+			int count1 = extend(array, i, i);
+			int count2 = extend(array, i, i + 1);
+			int count = Math.max(count1, count2);
+			if (count > maxLength) {
+				maxLength = count;
+				// 奇偶的startIndex可以统一成一个表达式
+				startIndex = i - (count - 1) / 2;
 			}
 		}
-		// 返回结果
-		int[] result = new int[2];
-		result[0] = startIndex;
-		result[1] = maxLength;
-		return result;
+		return s.substring(startIndex, startIndex + maxLength);
 	}
 
-	// 单核处理
-	private static int singleCore(int index, char[] array) {
-		// 长度计数器
-		int count = 1;
-		// 扩展次数，单核长度为1自对称，不判断
-		int extendTime = 1;
-		// 直到外扩超过数组范围，一直循环
-		while (index - extendTime >= 0 && index + extendTime < array.length) {
+	// 奇数回文和偶数回文统一处理
+	private static int extend(char[] array, int left, int right) {
+		// 回文长度和外扩次数
+		int count = 0;
+		int extendTime = 0;
+		// 外扩至超出数组范围
+		while (left - extendTime >= 0 && right + extendTime < array.length) {
 			// 不对称，直接跳出
-			if (array[index - extendTime] != array[index + extendTime]) {
+			if (array[left - extendTime] != array[right + extendTime]) {
 				break;
 			}
 			extendTime++;
 			count += 2;
 		}
-		return count;
-	}
-
-	// 双核处理，没有必要考虑左和右的问题，因为这一次的右就是下一次的左
-	private static int doubleCore(int index, char[] array) {
-		// 返回长度
-		int count = 0;
-		// 右双核的情况，最后一位排除
-		if (index != array.length - 1) {
-			int extendTime = 0;
-			// 双核的出界点的基础是不同的
-			while (index - extendTime >= 0 && index + extendTime + 1 < array.length) {
-				if (array[index - extendTime] != array[index + 1 + extendTime]) {
-					break;
-				}
-				extendTime++;
-				count += 2;
-			}
+		// 奇数回文，最终长度减一
+		if (left == right) {
+			count--;
 		}
 		return count;
 	}
