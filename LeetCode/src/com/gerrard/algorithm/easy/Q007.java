@@ -3,33 +3,44 @@ package com.gerrard.algorithm.easy;
 public class Q007 {
 
 	public static void main(String[] args) {
-		System.out.println(method(0));
-		System.out.println(method(123));
-		System.out.println(method(-123));
+
+		System.out.println("<==========第一组测试==========>");
+		System.out.println(reverse(0));
+		System.out.println();
+
+		System.out.println("<==========第二组测试==========>");
+		System.out.println(reverse(123));
+		System.out.println();
+
+		System.out.println("<==========第三组测试==========>");
+		System.out.println(reverse(-123));
+		System.out.println();
+
+		System.out.println("<==========第四组测试==========>");
+		System.out.println(reverse(1534236469));
+		System.out.println();
+
+		System.out.println("<==========第五组测试==========>");
+		System.out.println(reverse(Integer.MIN_VALUE));
 	}
 
-	private static int method(int number) {
+	public static int reverse(int x) {
 		// 正负的标志位
-		int flag = 1;
+		int sign = 1;
 		// 考虑负数转化
-		if (number <= 0) {
-			number = -number;
-			flag = -1;
+		if (x < 0) {
+			x = -x;
+			sign = -1;
 		}
-		int sum = 0;
-		// 先获取最高位，准备一个副本
-		int maxLevel = 0;
-		int temp = number;
-		while (temp > 0) {
-			temp /= 10;
-			maxLevel++;
-		}
+		long sum = 0;
+		// 先获取位数
+		int length = String.valueOf(x).length();
 		// 取余数，乘以因子累加
-		while (number > 0) {
-			// 要先减maxLevel
-			sum += (number % 10) * Math.pow(10, --maxLevel);
-			number /= 10;
+		while (x > 0) {
+			// 要先减length
+			sum += (x % 10) * Math.pow(10, --length);
+			x /= 10;
 		}
-		return sum * flag;
+		return sum > Integer.MAX_VALUE ? 0 : (int) sum * sign;
 	}
 }
