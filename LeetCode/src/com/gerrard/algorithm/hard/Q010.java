@@ -119,7 +119,7 @@ public class Q010 {
 			Character c = pAfterStar;
 			if (!c.equals(notXFromStart(s, pBeforeStar))) {
 				// 去掉b*，递归
-				return starMatchWithoutPoint(s, p.substring(0, 2) + p.substring(4));
+				return isMatch(s, p.substring(0, 2) + p.substring(4)) ? -1 : -2;
 			}
 			// b*有匹配，可以确定a*的匹配长度
 			return getLength(s, pBeforeStar);
