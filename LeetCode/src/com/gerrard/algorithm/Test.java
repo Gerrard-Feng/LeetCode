@@ -1,5 +1,7 @@
 package com.gerrard.algorithm;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,18 +10,15 @@ import java.util.Set;
 public class Test {
 
 	public static void main(String[] args) {
+		int[] array = { 1, 2, 3, 4, 5, 6, 7, 8 };
+		myAddAll(Arrays.copyOf(array, 2), Arrays.copyOfRange(array, 4, array.length));
+		System.out.println();
+	}
 
-		Set<int[]> set = new LinkedHashSet<>();
-		int[] a = new int[] { 1 };
-		int[] b = new int[] { 1 };
-		set.add(a);
-		set.add(b);
-		System.out.println(set.size());
-
-		List<Integer> list = new LinkedList<>();
-		list.add(1);
-		list.set(0, 2);
-		list.addAll(list);
-		System.out.println(list.size());
+	private static int[] myAddAll(int[] a1, int[] a2) {
+		int[] array = new int[a1.length + a2.length];
+		System.arraycopy(a1, 0, array, 0, a1.length);
+		System.arraycopy(a2, 0, array, a1.length, a2.length);
+		return array;
 	}
 }
