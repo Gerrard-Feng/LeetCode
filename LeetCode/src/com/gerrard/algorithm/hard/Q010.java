@@ -46,10 +46,18 @@ public class Q010 {
 		if (s == null || p == null) {
 			throw new IllegalArgumentException("Input error");
 		}
-		// 最后一位匹配失败，直接匹配失败
-		if (p.length() > 0 && s.length() > 0 && !p.substring(p.length() - 1).equals("*")
-				&& !singleMatch(s.charAt(s.length() - 1), p.charAt(p.length() - 1))) {
-			return false;
+		// 循环匹配最后一位，若匹配失败，直接匹配失败
+		while (p.length() > 0 && s.length() > 0) {
+			if (p.substring(p.length() - 1).equals("*")) {
+				break;
+			} else {
+				if (singleMatch(s.charAt(s.length() - 1), p.charAt(p.length() - 1))) {
+					p = p.substring(0, p.length() - 1);
+					s = s.substring(0, s.length() - 1);
+				} else {
+					return false;
+				}
+			}
 		}
 		return isMatchTrue(s, p);
 	}
