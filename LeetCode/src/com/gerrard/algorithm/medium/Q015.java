@@ -1,30 +1,37 @@
 package com.gerrard.algorithm.medium;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
 public class Q015 {
 
 	public static void main(String[] args) {
 		System.out.println("<==========第一组测试==========>");
 		int[] array1 = new int[] { -1, 0, 1, 2, -1, -4 };
-		show(method(array1));
+		show(threeSum(array1));
 
 		System.out.println("<==========第二组测试==========>");
 		int[] array2 = new int[] { -1, 0, 1, 2, -1, -4, -2, -2, -7, 3, 0, 0, 0, 0, -100, 55, 6, 8, 9, 23, 12, 33, -9,
 				-8, -6, 11, 23 };
-		show(method(array2));
+		show(threeSum(array2));
+
+		System.out.println("<==========第三组测试==========>");
+		int[] array3 = new int[] { 1, 2, -2, -1 };
+		show(threeSum(array3));
+
+		System.out.println("<==========第四组测试==========>");
+		int[] array4 = new int[] { -1, 0, 1, 2, -1, -4 };
+		show(threeSum(array4));
 	}
 
-	// 显示结果格式优化
-	private static void show(Set<int[]> set) {
+	private static void show(List<List<Integer>> result) {
 		System.out.println("[");
-		for (int[] a : set) {
+		for (List<Integer> list : result) {
 			System.out.print("  " + "[");
-			for (int i = 0; i < a.length; i++) {
-				System.out.print(a[i]);
-				if (i != a.length - 1) {
+			for (int i = 0; i < list.size(); i++) {
+				System.out.print(list.get(i));
+				if (i != list.size() - 1) {
 					System.out.print(",");
 				}
 			}
@@ -34,37 +41,39 @@ public class Q015 {
 		System.out.println("]");
 	}
 
-	private static Set<int[]> method(int[] array) {
-		// 返回的结果集
-		Set<int[]> set = new LinkedHashSet<>();
+	public static List<List<Integer>> threeSum(int[] nums) {
+		if (nums == null || nums.length < 3) {
+			throw new IllegalArgumentException("Input error");
+		}
+		List<List<Integer>> result = new ArrayList<>();
 		// 先给数组排序
-		Arrays.sort(array);
-		for (int i = 0; i < array.length - 2; i++) {
+		Arrays.sort(nums);
+		for (int i = 0; i < nums.length - 2; i++) {
 			// 第一个数大于0，之后更加没机会了
-			if (array[i] > 0) {
-				return set;
+			if (nums[i] > 0) {
+				return result;
 			}
 			// 先判断一下，如果当前值和上个值相同，直接跳过，注意第一位是没有“上一位”的概念的
-			if (i != 0 && array[i] == array[i - 1]) {
-				// 注意是continue，而不是break
+			if (i != 0 && nums[i] == nums[i - 1]) {
 				continue;
 			}
 			// 下次探寻终点
-			int lengthEnd = array.length;
+			int lengthEnd = nums.length;
 			for (int j = i + 1; j < lengthEnd - 1; j++) {
 				// 内循环第一个数，要大于0-array[i]
-				if (array[j] > -array[i]) {
+				if (nums[j] > -nums[i]) {
 					break;
 				}
 				// 同样的判断，第一次是没有必要的
-				if (j != i + 1 && array[j] == array[j - 1]) {
+				if (j != i + 1 && nums[j] == nums[j - 1]) {
 					continue;
 				}
 				// 定下两个，其实下一个也就决定了
-				int numberToFind = -(array[i] + array[j]);
+				int numberToFind = -(nums[i] + nums[j]);
 				// Arrays.binarySearch()方法只能在有序数组中使用
 				// 注意不是在整个数组上用这个方法，是在剩余数组上（夹逼过的）
-				int index = Arrays.binarySearch(Arrays.copyOfRange(array, j, lengthEnd), numberToFind);
+				int[] remian = Arrays.copyOfRange(nums, j + 1, lengthEnd);
+				int index = Arrays.binarySearch(remian, numberToFind);
 				// Arrays.binarySearch()查找失败时，会返回一个负值
 				// JAVA_API：这保证了当且仅当此键被找到时，返回的值将 >= 0。
 				if (index >= 0) {
@@ -74,10 +83,14 @@ public class Q015 {
 					// 再注意，这里的index，是去掉原数组前j项的index，加回去
 					lengthEnd = index + 1 + j;
 					// 这里可以保证array[i]<=array[j]<=array[index]，不必担心Set集合接收重复问题
-					set.add(new int[] { array[i], array[j], array[index + j] });
+					List<Integer> list = new ArrayList<>();
+					list.add(nums[i]);
+					list.add(nums[j]);
+					list.add(nums[index + j + 1]);
+					result.add(list);
 				}
 			}
 		}
-		return set;
+		return result;
 	}
 }
