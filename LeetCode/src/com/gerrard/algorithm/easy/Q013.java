@@ -3,15 +3,16 @@ package com.gerrard.algorithm.easy;
 public class Q013 {
 
 	public static void main(String[] args) {
-		System.out.println(method("MMXCIV"));
-		System.out.println(method("MCCXXXIV"));
-		System.out.println(method("MMM"));
-		System.out.println(method("XXXIX"));
-		System.out.println(method("DCLIV"));
+		
+		System.out.println(romanToInt("MMXCIV"));
+		System.out.println(romanToInt("MCCXXXIV"));
+		System.out.println(romanToInt("MMM"));
+		System.out.println(romanToInt("XXXIX"));
+		System.out.println(romanToInt("DCLIV"));
 	}
 
 	// 不考虑非法的罗马字符串形式
-	private static int method(String roman) {
+	public static int romanToInt(String roman) {
 		char[] array = roman.toCharArray();
 		int sum = 0;
 		// 上一个字符串代表的值，赋初始值不要影响第一次计算
