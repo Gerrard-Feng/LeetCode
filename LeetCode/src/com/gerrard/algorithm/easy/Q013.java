@@ -3,7 +3,7 @@ package com.gerrard.algorithm.easy;
 public class Q013 {
 
 	public static void main(String[] args) {
-		
+
 		System.out.println(romanToInt("MMXCIV"));
 		System.out.println(romanToInt("MCCXXXIV"));
 		System.out.println(romanToInt("MMM"));
@@ -13,6 +13,9 @@ public class Q013 {
 
 	// 不考虑非法的罗马字符串形式
 	public static int romanToInt(String roman) {
+		if (roman == null) {
+			throw new IllegalArgumentException("Input error");
+		}
 		char[] array = roman.toCharArray();
 		int sum = 0;
 		// 上一个字符串代表的值，赋初始值不要影响第一次计算
