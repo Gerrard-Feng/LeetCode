@@ -7,26 +7,36 @@ import java.util.List;
 public class Q015 {
 
 	public static void main(String[] args) {
+
 		System.out.println("<==========第一组测试==========>");
 		int[] array1 = new int[] { -1, 0, 1, 2, -1, -4 };
 		show(threeSum(array1));
+		show(method(array1));
 
 		System.out.println("<==========第二组测试==========>");
 		int[] array2 = new int[] { -1, 0, 1, 2, -1, -4, -2, -2, -7, 3, 0, 0, 0, 0, -100, 55, 6, 8, 9, 23, 12, 33, -9,
 				-8, -6, 11, 23 };
 		show(threeSum(array2));
+		show(method(array2));
 
 		System.out.println("<==========第三组测试==========>");
 		int[] array3 = new int[] { 1, 2, -2, -1 };
 		show(threeSum(array3));
+		show(method(array3));
 
 		System.out.println("<==========第四组测试==========>");
 		int[] array4 = new int[] { -1, 0, 1, 2, -1, -4 };
 		show(threeSum(array4));
+		show(method(array4));
+
+		System.out.println("<==========第五组测试==========>");
+		int[] array5 = new int[] { 0, 0, 0, 0 };
+		show(threeSum(array5));
+		show(method(array5));
 	}
 
 	private static void show(List<List<Integer>> result) {
-		System.out.println("[");
+		System.out.print("{");
 		for (List<Integer> list : result) {
 			System.out.print("  " + "[");
 			for (int i = 0; i < list.size(); i++) {
@@ -36,9 +46,8 @@ public class Q015 {
 				}
 			}
 			System.out.print("]");
-			System.out.println();
 		}
-		System.out.println("]");
+		System.out.println("  " + "}");
 	}
 
 	public static List<List<Integer>> threeSum(int[] nums) {
@@ -46,27 +55,79 @@ public class Q015 {
 			throw new IllegalArgumentException("Input error");
 		}
 		List<List<Integer>> result = new ArrayList<>();
+		Arrays.sort(nums);
+		int previous = 1;
+		for (int i = 0; i < nums.length - 2; i++) {
+			if (nums[i] > 0) {
+				return result;
+			}
+			if (nums[i] == previous) {
+				continue;
+			} else {
+				previous = nums[i];
+			}
+			int left = i + 1;
+			int right = nums.length - 1;
+			int numberToFind = -nums[i];
+			// 维护上一个左值和右值
+			int preLeft = Integer.MIN_VALUE, preRight = Integer.MIN_VALUE;
+			// 夹逼剩余两数之和
+			while (left < right) {
+				if (nums[left] == preLeft) {
+					left++;
+					continue;
+				}
+				if (nums[right] == preRight) {
+					right--;
+					continue;
+				}
+				int sum = nums[left] + nums[right];
+				// 找到不能退出循环，还有其他可能性
+				if (sum == numberToFind) {
+					List<Integer> list = new ArrayList<>();
+					list.add(nums[i]);
+					list.add(nums[left]);
+					list.add(nums[right]);
+					result.add(list);
+				}
+				if (sum < numberToFind) {
+					preLeft = nums[left];
+					left++;
+				} else {
+					preRight = nums[right];
+					right--;
+				}
+			}
+		}
+		return result;
+	}
+
+	private static List<List<Integer>> method(int[] nums) {
+		List<List<Integer>> result = new ArrayList<>();
 		// 先给数组排序
 		Arrays.sort(nums);
+		int previous = 1;
 		for (int i = 0; i < nums.length - 2; i++) {
 			// 第一个数大于0，之后更加没机会了
 			if (nums[i] > 0) {
 				return result;
 			}
-			// 先判断一下，如果当前值和上个值相同，直接跳过，注意第一位是没有“上一位”的概念的
-			if (i != 0 && nums[i] == nums[i - 1]) {
+			// 如果和上个值相同，直接跳过
+			if (nums[i] == previous) {
 				continue;
 			}
 			// 下次探寻终点
 			int lengthEnd = nums.length;
+			int previous2 = Integer.MIN_VALUE;
 			for (int j = i + 1; j < lengthEnd - 1; j++) {
 				// 内循环第一个数，要大于0-array[i]
 				if (nums[j] > -nums[i]) {
 					break;
 				}
-				// 同样的判断，第一次是没有必要的
-				if (j != i + 1 && nums[j] == nums[j - 1]) {
+				if (nums[j] == previous2) {
 					continue;
+				} else {
+					previous2 = nums[j];
 				}
 				// 定下两个，其实下一个也就决定了
 				int numberToFind = -(nums[i] + nums[j]);
@@ -90,6 +151,7 @@ public class Q015 {
 					result.add(list);
 				}
 			}
+			previous = nums[i];
 		}
 		return result;
 	}
