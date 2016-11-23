@@ -1,7 +1,7 @@
 package com.gerrard.algorithm.medium;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Q015 {
@@ -54,7 +54,7 @@ public class Q015 {
 		if (nums == null || nums.length < 3) {
 			throw new IllegalArgumentException("Input error");
 		}
-		List<List<Integer>> result = new ArrayList<>();
+		List<List<Integer>> result = new LinkedList<>();
 		Arrays.sort(nums);
 		int previous = 1;
 		for (int i = 0; i < nums.length - 2; i++) {
@@ -73,6 +73,9 @@ public class Q015 {
 			int preLeft = Integer.MIN_VALUE, preRight = Integer.MIN_VALUE;
 			// 夹逼剩余两数之和
 			while (left < right) {
+				if (nums[left] > -nums[i]) {
+					return result;
+				}
 				if (nums[left] == preLeft) {
 					left++;
 					continue;
@@ -84,7 +87,7 @@ public class Q015 {
 				int sum = nums[left] + nums[right];
 				// 找到不能退出循环，还有其他可能性
 				if (sum == numberToFind) {
-					List<Integer> list = new ArrayList<>();
+					List<Integer> list = new LinkedList<>();
 					list.add(nums[i]);
 					list.add(nums[left]);
 					list.add(nums[right]);
@@ -103,7 +106,7 @@ public class Q015 {
 	}
 
 	private static List<List<Integer>> method(int[] nums) {
-		List<List<Integer>> result = new ArrayList<>();
+		List<List<Integer>> result = new LinkedList<>();
 		// 先给数组排序
 		Arrays.sort(nums);
 		int previous = 1;
@@ -144,7 +147,7 @@ public class Q015 {
 					// 再注意，这里的index，是去掉原数组前j项的index，加回去
 					lengthEnd = index + 1 + j;
 					// 这里可以保证array[i]<=array[j]<=array[index]，不必担心Set集合接收重复问题
-					List<Integer> list = new ArrayList<>();
+					List<Integer> list = new LinkedList<>();
 					list.add(nums[i]);
 					list.add(nums[j]);
 					list.add(nums[index + j + 1]);
