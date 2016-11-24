@@ -1,78 +1,119 @@
 package com.gerrard.algorithm.medium;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Q017 {
 
 	public static void main(String[] args) {
-		List<String> list1 = method("78");
+
+		System.out.println("<==========第一组测试==========>");
+		List<String> list1 = letterCombinations("78");
 		for (String str : list1) {
-			System.out.println(str);
+			System.out.print(str + " ");
 		}
+		System.out.println();
+		List<String> list2 = letterCombinations2("78");
+		for (String str : list2) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+
+		System.out.println("<==========第二组测试==========>");
+		List<String> list3 = letterCombinations("2586");
+		for (String str : list3) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
+		List<String> list4 = letterCombinations2("2586");
+		for (String str : list4) {
+			System.out.print(str + " ");
+		}
+		System.out.println();
 	}
 
-	private static List<String> method(String digit) {
-		// 入参检查省略
-		// source一开始没有值
-		List<String> source = new ArrayList<>();
-		// 初始size需要等于1，不然之后不能循环
-		source.add("");
-		return format(source, digit);
-	}
-
-	private static List<String> format(List<String> source, String targetDigit) {
-		// 剩余数字不存在，返回source
-		if (targetDigit == null || targetDigit.length() < 1) {
+	public static List<String> letterCombinations(String digits) {
+		if (digits == null) {
+			throw new IllegalArgumentException("Input error");
+		}
+		String copyDigits = digits;
+		while (copyDigits.length() > 0) {
+			int i = copyDigits.charAt(0) - '0';
+			if (i < 2 || i > 9) {
+				throw new IllegalArgumentException("Input error");
+			}
+			copyDigits = copyDigits.substring(1);
+		}
+		// 只接受2-9的数值字符串
+		List<String> source = new LinkedList<>();
+		if (digits.equals("")) {
 			return source;
 		}
-		List<String> result = new ArrayList<>();
-		// 截取剩余未处理字符串的第一个值
-		int firstNumber;
-		try {
-			firstNumber = Integer.valueOf(targetDigit.substring(0, 1));
-		} catch (NumberFormatException e) {
-			return null;
+		// 初始size需要等于1，不然之后不能循环
+		source.add("");
+		return format(source, digits);
+	}
+
+	// 递归方法
+	private static List<String> format(List<String> source, String targetDigit) {
+		if (targetDigit.length() == 0) {
+			return source;
 		}
-		// 获取对应数字的字典
-		List<Character> cList = dict(firstNumber);
-		if (cList == null) {
-			return null;
-		}
+		List<String> result = new LinkedList<>();
+		// 第一个数
+		int first = targetDigit.charAt(0) - '0';
+		char[] cArray = dict(first);
 		// source集合和targetDigit第一个数字对应字典的全排列
 		for (String str : source) {
-			StringBuffer sb = new StringBuffer(str);
-			for (Character c : cList) {
-				sb.append(c);
-				result.add(sb.toString());
-				// 注意还原StringBuffer
-				sb = new StringBuffer(str);
+			for (char c : cArray) {
+				result.add(str + c);
 			}
 		}
 		// 将target转成source，继续递归
 		return format(result, targetDigit.substring(1));
 	}
 
-	// 数字-字母转译字典
-	private static List<Character> dict(int number) {
-		// 不接收2-9以外的数字
-		if (number < 2 || number > 9) {
-			return null;
+	private static char[] dict(int num) {
+		String[] mappping = new String[] { "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+		return mappping[num - 2].toCharArray();
+	}
+
+	public static List<String> letterCombinations2(String digits) {
+		LinkedList<String> ans = new LinkedList<String>();
+		ans.add("");
+		for (int i = 0; i < digits.length(); i++) {
+			int x = Character.getNumericValue(digits.charAt(i));
+			while (ans.peek().length() == i) {
+				String t = ans.remove();
+				for (char s : dict2(x))
+					ans.add(t + s);
+			}
 		}
-		List<Character> list = new ArrayList<>();
+		return ans;
+	}
+
+	// 数字-字母转译字典
+	private static char[] dict2(int num) {
+		char[] result;
+		if (num == 9 || num == 7) {
+			result = new char[4];
+		} else {
+			result = new char[3];
+		}
 		// 注意7和9代表4个字母
 		char start;
-		if (number < 8) {
-			start = (char) ('a' + (number - 2) * 3);
+		if (num < 8) {
+			start = (char) ('a' + (num - 2) * 3);
 		} else {
-			start = (char) ('a' + (number - 2) * 3 + 1);
+			start = (char) ('a' + (num - 2) * 3 + 1);
 		}
-		list.add(start);
-		list.add((char) (start + 1));
-		list.add((char) (start + 2));
-		if (number == 9 || number == 7) {
-			list.add((char) (start + 3));
+		result[0] = start;
+		result[1] = (char) (start + 1);
+		result[2] = (char) (start + 2);
+		if (num == 9 || num == 7) {
+			result[3] = (char) (start + 3);
 		}
-		return list;
+		return result;
 	}
+
 }
