@@ -5,59 +5,61 @@ import java.util.Arrays;
 public class Q016 {
 
 	public static void main(String[] args) {
+
+		System.out.println("<==========第一组测试==========>");
 		int[] array1 = { -12, -7, 0, 4, 22, -8, 2, 55, 32, 11 };
 		int target1 = -7;
-		int[] result1 = method(array1, target1);
-		for (int a : result1) {
-			System.out.print(a + " ");
-		}
+		System.out.println(threeSumClosest(array1, target1));
+		System.out.println();
+
+		System.out.println("<==========第二组测试==========>");
+		int[] array2 = { 2, 1, 0 };
+		int target2 = 3;
+		System.out.println(threeSumClosest(array2, target2));
+		System.out.println();
+
+		System.out.println("<==========第三组测试==========>");
+		int[] array3 = { 1, 1, -1, -1, 3 };
+		int target3 = -1;
+		System.out.println(threeSumClosest(array3, target3));
+		System.out.println();
 	}
 
-	private static int[] method(int[] array, int target) {
-		// 入参检查
-		if (array == null || array.length < 3) {
-			return null;
+	// 返回值是数组3个元素的和，不是差值
+	public static int threeSumClosest(int[] nums, int target) {
+		if (nums == null || nums.length < 3) {
+			throw new IllegalArgumentException("Input error");
 		}
-		// 结果数组
-		int[] result = new int[3];
-		// 先排序
-		Arrays.sort(array);
-		// 维护的最小值，第一次赋值数组的第1，2和最后一项与target的差值
-		int closest = Math.abs(target - (array[0] + array[1] + array[array.length - 1]));
-		// 将3Sum Closest的问题，转成n-2个2Sum Closest的问题
-		// i是最后两项不用跑，因为数字不够了
-		for (int i = 0; i < array.length - 2; i++) {
-			// 剩余两个的下标，取头尾
-			int j = i + 1;
-			int k = array.length - 1;
-			// 2Sum Closest问题的target
-			int tempTarget = target - array[i];
+		Arrays.sort(nums);
+		// 初始差值和返回值
+		int returnNo = Integer.MAX_VALUE;
+		int closest = Integer.MAX_VALUE;
+		for (int i = 0; i < nums.length - 2; i++) {
+			// 数组剩余部分夹逼
+			int left = i + 1;
+			int right = nums.length - 1;
+			// 转化为2Sum Closest问题
+			int remainTarget = target - nums[i];
 			int sum;
-			while (j != k) {
-				sum = array[j] + array[k];
-				// 因为解唯一，等于0直接赋值后退出
-				if (tempTarget - sum == 0) {
-					result[0] = array[i];
-					result[1] = array[j];
-					result[2] = array[k];
-					return result;
+			while (left < right) {
+				sum = nums[left] + nums[right];
+				// 解唯一确定，直接返回
+				if (remainTarget - sum == 0) {
+					return sum + nums[i];
 				}
-				// 最小值替换
-				if (Math.abs(tempTarget - sum) < closest) {
-					result[0] = array[i];
-					result[1] = array[j];
-					result[2] = array[k];
-					closest = Math.abs(tempTarget - sum);
+				// 最小值替换，返回值赋值
+				int temp = Math.abs(remainTarget - sum);
+				if (temp < closest) {
+					returnNo = nums[i] + nums[left] + nums[right];
+					closest = temp;
 				}
-				if (tempTarget - sum > 0) {
-					// 和过小，升底
-					j++;
+				if (remainTarget - sum > 0) {
+					left++;
 				} else {
-					// 和过大，降层
-					k--;
+					right--;
 				}
 			}
 		}
-		return result;
+		return returnNo;
 	}
 }
