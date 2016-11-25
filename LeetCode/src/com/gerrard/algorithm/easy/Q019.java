@@ -3,135 +3,87 @@ package com.gerrard.algorithm.easy;
 public class Q019 {
 
 	public static void main(String[] args) {
-		SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
-		list.add(1);
-		list.add(2);
-		list.add(3);
-		list.add(4);
-		list.add(5);
-		method(list, 2);
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i));
-		}
+
+		System.out.println("<==========第一组测试==========>");
+		ListNode head1 = removeNthFromEnd(create(), 1);
+		show(head1);
+
+		System.out.println("<==========第二组测试==========>");
+		ListNode head2 = removeNthFromEnd(create(), 5);
+		show(head2);
+
+		System.out.println("<==========第三组测试==========>");
+		ListNode head3 = removeNthFromEnd(create(), 1);
+		show(head3);
 	}
 
-	private static void method(SinglyLinkedList<Integer> list, int nFromEnd) {
-		int index = list.size() - nFromEnd;
-		list.removeIndexOf(index);
+	private static ListNode create() {
+		ListNode l1 = new ListNode(1);
+		ListNode l2 = new ListNode(2);
+		ListNode l3 = new ListNode(3);
+		ListNode l4 = new ListNode(4);
+		ListNode l5 = new ListNode(5);
+		l1.next = l2;
+		l2.next = l3;
+		l3.next = l4;
+		l4.next = l5;
+		return l1;
 	}
 
-	private static class SinglyLinkedList<E> {
-
-		private static class Node<E> {
-
-			E element;
-			Node<E> next;
-
-			Node(E element, Node<E> next) {
-				this.element = element;
-				this.next = next;
+	private static void show(ListNode node) {
+		while (node != null) {
+			System.out.print(node.val);
+			if (node.next != null) {
+				System.out.print("->");
 			}
+			node = node.next;
 		}
+		System.out.println("\n");
+	}
 
-		private int size = 0;
-		Node<E> last;
-		Node<E> first;
-		Node<E> head = new Node<>(null, null);
-
-		public void add(E e) {
-			// 待增加的结点
-			Node<E> newNode = new Node<>(e, null);
-			// 上一个结点
-			Node<E> preNode = last;
-			// 第一次增加结点的情况
-			if (last == null) {
-				// 将当前结点作为第一个结点
-				first = newNode;
-				// 头结点指针
-				head.next = first;
-			} else {
-				// 把上一个结点的next指针指向当前结点
-				preNode.next = newNode;
-			}
-			// 更新最后一个结点
-			last = newNode;
-			size++;
+	public static ListNode removeNthFromEnd(ListNode head, int n) {
+		if (head == null) {
+			throw new IllegalArgumentException("Input error");
 		}
-
-		public void removeIndexOf(int index) {
-			checkIndex(index);
-			// 是第一个结点的情况
-			if (index == 0) {
-				if (size == 1) {
-					// 只有一个结点的情况
-					first = null;
-					last = null;
-					head.next = null;
-				} else {
-					// 不影响last，但是要重新改变头结点的指针和first的值
-					head.next = first.next;
-					first = first.next;
-				}
-			} else {
-				// 上一个结点
-				Node<E> preNode = getNode(index - 1);
-				// 当前结点
-				Node<E> currentNode = preNode.next;
-				// 是最后一个结点的情况，不用考虑单结点的情况
-				if (index == size - 1) {
-					preNode.next = null;
-					currentNode = null;
-				} else {
-					// 中间情况，将上一个结点的指针指向下一个结点
-					preNode.next = currentNode.next;
-					currentNode = null;
-				}
-			}
-			// remove结束之后记得削减size
-			size--;
+		ListNode current = head;
+		ListNode[] array = new ListNode[] {};
+		int length = 1;
+		while (current != null) {
+			array = extendArray(array, current);
+			current = current.next;
+			length++;
 		}
-
-		public E get(int index) {
-			// 先检查index
-			checkIndex(index);
-			// 当前结点值，一开始赋值first
-			Node<E> currentNode = first;
-			for (int i = 0; i < size; i++) {
-				if (i < index) {
-					// 取到index之前一路next
-					currentNode = currentNode.next;
-				} else {
-					// 取到break
-					break;
-				}
-			}
-			return currentNode.element;
+		if (n > length) {
+			throw new IllegalArgumentException("Input error");
 		}
-
-		public int size() {
-			return size;
+		// 记录删除节点，以及上一个节点
+		int index = length - n;
+		int lastIndex = length - n - 1;
+		// 删除第一个节点的情况
+		if (lastIndex == 0) {
+			head = head.next;
+		} else {
+			ListNode deleteNode = array[index - 1];
+			ListNode lastNode = array[lastIndex - 1];
+			lastNode.next = deleteNode.next;
+			deleteNode = null;
 		}
+		return head;
+	}
 
-		// 检查下标，超出下标抛异常
-		private void checkIndex(int index) {
-			if (index > size - 1 || index < 0) {
-				String errorMessage = "size=" + size + ";index=" + index;
-				throw new IndexOutOfBoundsException(errorMessage);
-			}
-		}
+	private static ListNode[] extendArray(ListNode[] array, ListNode node) {
+		ListNode[] listArray = new ListNode[array.length + 1];
+		System.arraycopy(array, 0, listArray, 0, array.length);
+		listArray[array.length] = node;
+		return listArray;
+	}
 
-		// 获取指定index的结点
-		private Node<E> getNode(int index) {
-			// 没有必要检查index，因为是private方法，调用的地方会优先检查
-			Node<E> currentNode = first;
-			for (int i = 0; i < size; i++) {
-				if (i == index) {
-					break;
-				} else {
-					currentNode = currentNode.next;
-				}
-			}
-			return currentNode;
+	private static class ListNode {
+		int val;
+		ListNode next;
+
+		ListNode(int x) {
+			val = x;
 		}
 	}
 }
