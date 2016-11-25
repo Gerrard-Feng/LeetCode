@@ -6,6 +6,7 @@ import java.util.List;
 public class Q020 {
 
 	public static void main(String[] args) {
+
 		String a = "";
 		String b = ")";
 		String c = "{[()]";
@@ -23,9 +24,8 @@ public class Q020 {
 	}
 
 	public static boolean isValid(String str) {
-		// 入参保护
 		if (str == null) {
-			return false;
+			throw new IllegalArgumentException("Input error");
 		}
 		// 0长度特殊处理
 		if (str.length() == 0) {
@@ -57,18 +57,11 @@ public class Q020 {
 				if (leftList.size() == 0) {
 					return false;
 				} else {
-					Character last = leftList.get(leftList.size() - 1);
-					// 只有Level相等，Direction相反，才是正确的
-					// 匹配之后，去掉leftList的最后一项
-					if (getDirection(last) == -getDirection(array[i]) && getLevel(last) == getLevel(array[i])) {
-						leftList.remove(leftList.size() - 1);
-					} else {
-						return false;
-					}
+					// 题目认为"({})"也是合理的形式
+					leftList.remove(leftList.size() - 1);
 				}
 			} else {
-				// 不接收非括号
-				return false;
+				throw new IllegalArgumentException("Input error");
 			}
 		}
 		// 循环结束之后判断leftList是否还有剩余
