@@ -34,14 +34,29 @@ public class Q016 {
 		// 初始差值和返回值
 		int returnNo = Integer.MAX_VALUE;
 		int closest = Integer.MAX_VALUE;
+		int previous = Integer.MAX_VALUE;
 		for (int i = 0; i < nums.length - 2; i++) {
+			if (nums[i] == previous) {
+				continue;
+			}else{
+			    previous = nums[i];
+			}
 			// 数组剩余部分夹逼
 			int left = i + 1;
 			int right = nums.length - 1;
 			// 转化为2Sum Closest问题
 			int remainTarget = target - nums[i];
 			int sum;
+			int preLeft = Integer.MIN_VALUE, preRight = Integer.MIN_VALUE;
 			while (left < right) {
+				if (nums[left] == preLeft) {
+					left++;
+					continue;
+				}
+				if (nums[right] == preRight) {
+					right--;
+					continue;
+				}
 				sum = nums[left] + nums[right];
 				// 解唯一确定，直接返回
 				if (remainTarget - sum == 0) {
