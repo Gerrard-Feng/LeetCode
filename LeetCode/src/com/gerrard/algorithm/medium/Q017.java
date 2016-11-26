@@ -79,17 +79,22 @@ public class Q017 {
 	}
 
 	public static List<String> letterCombinations2(String digits) {
-		LinkedList<String> ans = new LinkedList<String>();
-		ans.add("");
+		LinkedList<String> list = new LinkedList<String>();
+		if (digits.length() == 0) {
+			return list;
+		}
+		list.add("");
 		for (int i = 0; i < digits.length(); i++) {
 			int x = Character.getNumericValue(digits.charAt(i));
-			while (ans.peek().length() == i) {
-				String t = ans.remove();
-				for (char s : dict2(x))
-					ans.add(t + s);
+			while (list.peek().length() == i) {
+				// 删除集合第一个元素并返回
+				String s = list.remove();
+				for (char c : dict2(x)) {
+					list.add(s + c);
+				}
 			}
 		}
-		return ans;
+		return list;
 	}
 
 	// 数字-字母转译字典
@@ -115,5 +120,4 @@ public class Q017 {
 		}
 		return result;
 	}
-
 }
