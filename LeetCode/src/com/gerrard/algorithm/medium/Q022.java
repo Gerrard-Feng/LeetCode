@@ -1,52 +1,88 @@
 package com.gerrard.algorithm.medium;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Q022 {
 
 	public static void main(String[] args) {
+
 		System.out.println("<==========第一组测试==========>");
-		Set<String> result1 = method(1);
-		for (String s : result1) {
-			System.out.println(s);
-		}
+		show(1);
+
 		System.out.println("<==========第二组测试==========>");
-		Set<String> result2 = method(2);
-		for (String s : result2) {
-			System.out.println(s);
-		}
+		show(2);
+
 		System.out.println("<==========第三组测试==========>");
-		Set<String> result3 = method(3);
-		for (String s : result3) {
-			System.out.println(s);
-		}
+		show(3);
+
 		System.out.println("<==========第四组测试==========>");
-		Set<String> result4 = method(4);
-		for (String s : result4) {
-			System.out.println(s);
+		show(4);
+	}
+
+	private static void show(int n) {
+		List<String> result1 = generateParenthesis(n);
+		List<String> result2 = generateParenthesis2(n);
+		for (String s : result1) {
+			if (!result2.contains(s)) {
+				System.out.println(s);
+			}
 		}
+//		for (String s : result1) {
+//			System.out.print(s + " ");
+//		}
+//		System.out.println("\n");
+	}
+
+	public static List<String> generateParenthesis2(int n) {
+		List<String> result = new ArrayList<>();
+		if (n == 1) {
+			result.add("()");
+
+		} else {
+			List<String> source = generateParenthesis2(n - 1);
+			for (String s : source) {
+				List<String> list = new ArrayList<>();
+				list.add("()" + s);
+				list.add(s + "()");
+				list.add("(" + s + ")");
+				for (String str : list) {
+					if (!result.contains(str)) {
+						result.add(str);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	// 先遍历所有左括号情况，再遍历右括号情况是错误的
-	private static Set<String> method(int number) {
+	public static List<String> generateParenthesis(int n) {
 		// 入参保护
-		if (number < 1) {
-			return null;
+		if (n < 1) {
+			throw new IllegalArgumentException("Input error");
 		}
-		// 结果集
-		Set<String> set = new LinkedHashSet<>();
+		List<String> result = new LinkedList<>();
 		// 递归终点
-		if (number == 1) {
-			set.add("()");
-			return set;
+		if (n == 1) {
+			result.add("()");
+			return result;
 		}
-		Set<String> lastSet = method(number - 1);
+		List<String> last = generateParenthesis(n - 1);
 		// 一般情况
-		for (String s1 : lastSet) {
-			set.addAll(addParentheses(s1));
+		for (String s1 : last) {
+			result.addAll(addParentheses(s1));
 		}
-		return set;
+		List<String> list = new ArrayList<>();
+		for (String s : result) {
+			if (!list.contains(s)) {
+				list.add(s);
+			}
+		}
+		return list;
 	}
 
 	// 加括号
