@@ -1,8 +1,7 @@
 package com.gerrard.algorithm.medium;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,115 +23,84 @@ public class Q022 {
 	}
 
 	private static void show(int n) {
-		List<String> result1 = generateParenthesis(n);
-		List<String> result2 = generateParenthesis2(n);
-		for (String s : result1) {
-			if (!result2.contains(s)) {
-				System.out.println(s);
-			}
+		List<String> result = generateParenthesis(n);
+		for (String s : result) {
+			System.out.print(s + " ");
 		}
-//		for (String s : result1) {
-//			System.out.print(s + " ");
-//		}
-//		System.out.println("\n");
+		System.out.println("\n");
 	}
 
-	public static List<String> generateParenthesis2(int n) {
-		List<String> result = new ArrayList<>();
-		if (n == 1) {
-			result.add("()");
+	public static List<String> generateParenthesis(int n) {
+		if (n < 1) {
+			throw new IllegalArgumentException("Input error");
+		}
+		List<String> master = new ArrayList<String>();
+		recur(n, n, "", master);
+		return master;
 
+	}
+
+	public static void recur(int open, int close, String current, List<String> master) {
+		if (open == 0 && close == 0) {
+			master.add(current);
+		}
+		if (open > 0) {
+			recur(open - 1, close, current + "(", master);
+		}
+		if (close > 0 && close > open) {
+			recur(open, close - 1, current + ")", master);
+		}
+	}
+
+	// 根据n-1的情况增加括号
+	public static List<String> method(int n) {
+		List<String> list = new ArrayList<>(getPharentheses(n));
+		return list;
+	}
+
+	private static Set<String> getPharentheses(int n) {
+		Set<String> set = new HashSet<>();
+		if (n == 1) {
+			set.add("()");
 		} else {
-			List<String> source = generateParenthesis2(n - 1);
-			for (String s : source) {
-				List<String> list = new ArrayList<>();
-				list.add("()" + s);
-				list.add(s + "()");
-				list.add("(" + s + ")");
-				for (String str : list) {
-					if (!result.contains(str)) {
-						result.add(str);
+			Set<String> last = getPharentheses(n - 1);
+			for (String s : last) {
+				String s1 = "(" + s;
+				int l1 = 0;
+				int r1 = 0;
+				for (int j = 1; j < s1.length(); j++) {
+					if (s1.charAt(j) == '(') {
+						l1++;
+					} else {
+						r1++;
+					}
+					// 这里有重复的可能性
+					if (l1 > r1) {
+						set.add(s1.substring(0, j + 1) + ")" + s1.substring(j + 1));
+					}
+				}
+				// 先加左括号
+				for (int i = 1; i < s.length(); i++) {
+					if (s.charAt(i) == ')') {
+						String str = s.substring(0, i + 1) + "(" + s.substring(i + 1);
+						// 左右括号计数
+						int l = 0;
+						int r = 0;
+						for (int j = i + 1; j < str.length(); j++) {
+							if (str.charAt(j) == '(') {
+								l++;
+							} else {
+								r++;
+							}
+							// 这里有重复的可能性
+							if (l > r) {
+								set.add(str.substring(0, j + 1) + ")" + str.substring(j + 1));
+							}
+						}
 					}
 				}
 			}
 		}
-		return result;
-	}
-
-	// 先遍历所有左括号情况，再遍历右括号情况是错误的
-	public static List<String> generateParenthesis(int n) {
-		// 入参保护
-		if (n < 1) {
-			throw new IllegalArgumentException("Input error");
-		}
-		List<String> result = new LinkedList<>();
-		// 递归终点
-		if (n == 1) {
-			result.add("()");
-			return result;
-		}
-		List<String> last = generateParenthesis(n - 1);
-		// 一般情况
-		for (String s1 : last) {
-			result.addAll(addParentheses(s1));
-		}
-		List<String> list = new ArrayList<>();
-		for (String s : result) {
-			if (!list.contains(s)) {
-				list.add(s);
-			}
-		}
-		return list;
-	}
-
-	// 加括号
-	private static Set<String> addParentheses(String str) {
-		Set<String> set = new LinkedHashSet<>();
-		// 先加左括号
-		// 先在第一个位置加"("，其实是第二个位置，但是等价的
-		String tempFirst = insert(str, 0, "(");
-		set.addAll(addRight(tempFirst, 1));
-		// 第一个不可能是右括号
-		for (int i = 1; i < str.length(); i++) {
-			// 在遇到的每一个")"后面加"("，防止重复情况
-			if (str.substring(i, i + 1).equals(")")) {
-				String temp = insert(str, i, "(");
-				// 加完左括号之后，立即加右括号
-				// 注意新加的"("在temp里的index是i+1
-				set.addAll(addRight(temp, i + 1));
-			}
-		}
 		return set;
-	}
-
-	// 加右括号，是基于已经加好的左括号，在这个左括号之后加右括号
-	private static Set<String> addRight(String str, int leftIndex) {
-		Set<String> set = new LinkedHashSet<>();
-		// 左右括号的个数
-		int leftNumber = 0;
-		int rightNumber = 0;
-		// 从i=leftIndex开始计数，之前的leftNumber=rightNumber，就不计入统计了
-		for (int i = leftIndex; i < str.length(); i++) {
-			String current = str.substring(i, i + 1);
-			if (current.equals("(")) {
-				leftNumber++;
-			} else {
-				rightNumber++;
-			}
-			// 累计当前之后的括号数，再判断是否可加右括号
-			if (leftNumber > rightNumber) {
-				// 这里是可能出现重复现象的
-				// 如"(()"，i=1或2，之后加")"都是一样的
-				set.add(insert(str, i, ")"));
-			}
-		}
-		return set;
-	}
-
-	// 在index位置之后1位，增加insertTarget
-	private static String insert(String str, int index, String insertTarget) {
-		String part1 = str.substring(0, index + 1);
-		String part2 = str.substring(index + 1, str.length());
-		return new StringBuffer(part1).append(insertTarget).append(part2).toString();
 	}
 }
