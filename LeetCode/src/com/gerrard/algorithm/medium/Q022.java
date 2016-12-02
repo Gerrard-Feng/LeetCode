@@ -22,6 +22,7 @@ public class Q022 {
 		show(4);
 	}
 
+	// 显示优化
 	private static void show(int n) {
 		List<String> result = generateParenthesis(n);
 		for (String s : result) {
@@ -34,21 +35,22 @@ public class Q022 {
 		if (n < 1) {
 			throw new IllegalArgumentException("Input error");
 		}
-		List<String> master = new ArrayList<String>();
-		recur(n, n, "", master);
-		return master;
-
+		List<String> list = new ArrayList<>();
+		generate(n, n, "", list);
+		return list;
 	}
 
-	public static void recur(int open, int close, String current, List<String> master) {
-		if (open == 0 && close == 0) {
-			master.add(current);
+	// 先加所有左括号，遍历所有可能性，然后回退一个左括号，依次类推
+	private static void generate(int left, int right, String current, List<String> list) {
+		// 先加左括号
+		if (left > 0) {
+			generate(left - 1, right, current + "(", list);
 		}
-		if (open > 0) {
-			recur(open - 1, close, current + "(", master);
+		if (right > 0 && right > left) {
+			generate(left, right - 1, current + ")", list);
 		}
-		if (close > 0 && close > open) {
-			recur(open, close - 1, current + ")", master);
+		if (left == 0 && right == 0) {
+			list.add(current);
 		}
 	}
 
