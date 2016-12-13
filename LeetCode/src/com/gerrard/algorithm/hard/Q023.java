@@ -13,7 +13,7 @@ public class Q023 {
 	}
 
 	// 合并 k 个有序链表
-	public static ListNode mergeListsArray(ListNode[] lists) {
+	private static ListNode mergeListsArray(ListNode[] lists) {
 		// 递归终点
 		if (lists.length == 1) {
 			return lists[0];
