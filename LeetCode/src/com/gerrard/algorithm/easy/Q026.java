@@ -1,7 +1,5 @@
 package com.gerrard.algorithm.easy;
 
-import java.util.Arrays;
-
 public class Q026 {
 
 	public static void main(String[] args) {
