@@ -28,20 +28,20 @@ public class Q026 {
 		}
 	}
 
-	public static int removeDuplicates(int[] array) {
-		if (array == null) {
+	public static int removeDuplicates(int[] nums) {
+		if (nums == null) {
 			throw new IllegalArgumentException("Input error");
 		}
-		if (array.length < 2) {
-			return array.length;
+		if (nums.length < 2) {
+			return nums.length;
 		}
 		// 慢指针
 		int i = 0;
-		for (int j = 1; j < array.length; j++) {
+		for (int j = 1; j < nums.length; j++) {
 			// 快指针不断前进，遇到与慢指针数字相同的情况，跳过
-			if (array[j] != array[i]) {
+			if (nums[j] != nums[i]) {
 				i++;
-				array[i] = array[j];
+				nums[i] = nums[j];
 			}
 		}
 		// 返回新数组的长度，不关心之后的内容
