@@ -19,16 +19,17 @@ public class Q024 {
 		// 第一个节点会变
 		ListNode first = head == null || head.next == null ? head : head.next;
 		// 上一个节点
-		ListNode last = new ListNode(0);
+		ListNode before = new ListNode(0);
+		ListNode after = new ListNode(0);
 		while (head != null && head.next != null) {
 			// 下一个节点
-			ListNode after = head.next;
+			after = head.next;
 			// 交换节点
-			last.next = after;
+			before.next = after;
 			head.next = after.next;
 			after.next = head;
 			// 下一次交换赋值
-			last = head;
+			before = head;
 			head = head.next;
 		}
 		return first;
