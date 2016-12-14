@@ -27,6 +27,48 @@ public class Q028 {
 	}
 
 	public static int strStr(String haystack, String needle) {
+		// 入参检查
+		if (haystack == null || needle == null) {
+			return -1;
+		}
+		int sourceLength = haystack.length();
+		int targetLength = needle.length();
+		// 父串长度为0
+		if (sourceLength == 0) {
+			return targetLength == 0 ? 0 : -1;
+		}
+		// 子串长度为0
+		if (targetLength == 0) {
+			return 0;
+		}
+		char[] source = haystack.toCharArray();
+		char[] target = needle.toCharArray();
+		// 遍历的终点
+		int max = sourceLength - targetLength;
+		// 第一个字符
+		char first = target[0];
+		for (int i = 0; i <= max; i++) {
+			// 先找到第一个匹配情况
+			if (source[i] != first) {
+				while (++i <= max && source[i] != first)
+					;
+			}
+			if (i <= max) {
+				int j = i + 1;
+				int end = j + targetLength - 1;
+				for (int k = 1; j < end && source[j] == target[k]; j++, k++)
+					;
+				// 完全匹配的情况
+				if (j == end) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
+	// JDK 自带方法
+	public static int jdkSource(String haystack, String needle) {
 		return haystack.indexOf(needle);
 	}
 
@@ -35,7 +77,7 @@ public class Q028 {
 		if (haystack == null || needle == null) {
 			return -1;
 		}
-		if (haystack.equals(needle)) {
+		if (haystack.length() == 0 && needle.length() == 0) {
 			return 0;
 		}
 		char[] parent = haystack.toCharArray();
