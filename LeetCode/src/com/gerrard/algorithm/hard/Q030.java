@@ -60,6 +60,34 @@ public class Q030 {
 		// 单次和总体匹配长度
 		int len = words[0].length();
 		int total = len * words.length;
+		// 第一层循环，分为 len 组
+		for (int i = 0; i < len; i++) {
+			Map<String, Integer> copy = new HashMap<>(map);
+			List<String> scannedList = new ArrayList<>();
+			// 第二层循环，遍历当前组，每次累加 len 的长度
+			for (int j = 0; j < s.length() + 1 - total; j += len) {
+				// 扫描长度
+				int scanLen = 0;
+				// 第三层循环，判断当前其实位置是否符合
+				for (int k = j; k < j + total; k += len) {
+					String cur = s.substring(k, k + len);
+					if (!copy.containsKey(cur) || copy.get(cur) == 0) {
+						if (scannedList.contains(cur)) {
+							// 下一次遍历，已经扫描的字符串数组，去掉一个当前字符串
+						} else {
+							// 下一次遍历，从错误位置的下一个字符开始，扫描的字符串集合清空
+						}
+						break;
+					} else {
+						// 当前字符串存在
+						scannedList.add(cur);
+						copy.put(cur, copy.get(cur) - 1);
+						scanLen += len;
+					}
+				}
+			}
+		}
+
 		// 下一组匹配的 Map
 		List<Map<String, Integer>> groupList = new ArrayList<>();
 		// 上一次匹配的出错位置
@@ -72,7 +100,6 @@ public class Q030 {
 		for (int i = 0; i < len; i++) {
 			mapLen[i] = words.length;
 		}
-
 		// 上一组的匹配结果
 		// 单独计算第一组的结果
 		for (int i = 0; i < len && i < s.length() + 1 - total; i++) {
