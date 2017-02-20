@@ -14,7 +14,7 @@ public class Q030 {
 		System.out.println("<==========第一组测试==========>");
 		String s1 = "barfoothefoobarman";
 		String[] words1 = { "foo", "bar" };
-		for (int a : method_1(s1, words1)) {
+		for (int a : findSubstring(s1, words1)) {
 			System.out.print(a + " ");
 		}
 		System.out.println("\n");
@@ -22,7 +22,7 @@ public class Q030 {
 		System.out.println("<==========第二组测试==========>");
 		String s2 = "wordgoodgoodgoodbestword";
 		String[] words2 = { "word", "good", "best", "good" };
-		for (int a : method_1(s2, words2)) {
+		for (int a : findSubstring(s2, words2)) {
 			System.out.print(a + " ");
 		}
 		System.out.println("\n");
@@ -30,7 +30,7 @@ public class Q030 {
 		System.out.println("<==========第三组测试==========>");
 		String s3 = "a";
 		String[] words3 = { "a" };
-		for (int a : method_1(s3, words3)) {
+		for (int a : findSubstring(s3, words3)) {
 			System.out.print(a + " ");
 		}
 		System.out.println("\n");
@@ -38,7 +38,7 @@ public class Q030 {
 		System.out.println("<==========第四组测试==========>");
 		String s4 = "abababababababababab";
 		String[] words4 = { "ab", "ab", "ba", "ba" };
-		for (int a : method_1(s4, words4)) {
+		for (int a : findSubstring(s4, words4)) {
 			System.out.print(a + " ");
 		}
 	}
@@ -49,12 +49,14 @@ public class Q030 {
 			return result;
 		}
 		// 匹配数组转成 Map 键值对存储：字符串-出现次数
-		Map<String, Integer> map = new HashMap<>();
+		Map<String, Integer> initMap = new HashMap<>();
+		Map<String, Integer> initScanned = new HashMap<>();
 		for (String word : words) {
-			if (map.containsKey(word)) {
-				map.put(word, map.get(word) + 1);
+			if (initMap.containsKey(word)) {
+				initMap.put(word, initMap.get(word) + 1);
 			} else {
-				map.put(word, 1);
+				initMap.put(word, 1);
+				initScanned.put(word, 0);
 			}
 		}
 		// 单次和总体匹配长度
@@ -62,78 +64,132 @@ public class Q030 {
 		int total = len * words.length;
 		// 第一层循环，分为 len 组
 		for (int i = 0; i < len; i++) {
-			Map<String, Integer> copy = new HashMap<>(map);
-			List<String> scannedList = new ArrayList<>();
-			// 第二层循环，遍历当前组，每次累加 len 的长度
-			for (int j = 0; j < s.length() + 1 - total; j += len) {
-				// 扫描长度
-				int scanLen = 0;
+			Map<String, Integer> copy = new HashMap<>(initMap);
+			Map<String, Integer> scannedMap = new HashMap<>(initScanned);
+			// 第二层循环，遍历当前组，每次累加 的长度由第三层循环决定
+			for (int j = i; j < s.length() + 1 - total;) {
+				// 成功情况，分三种
+				int successSituation = 0;
+				int scanned = calcScanned(scannedMap) * len;
 				// 第三层循环，判断当前其实位置是否符合
-				for (int k = j; k < j + total; k += len) {
+				for (int k = j + scanned; k < j + total; k += len) {
 					String cur = s.substring(k, k + len);
-					if (!copy.containsKey(cur) || copy.get(cur) == 0) {
-						if (scannedList.contains(cur)) {
+					if (!containsMap(copy, cur)) {
+						if (scannedMap.containsKey(cur) && scannedMap.get(cur) > 0) {
 							// 下一次遍历，已经扫描的字符串数组，去掉一个当前字符串
+							successSituation = 1;
 						} else {
 							// 下一次遍历，从错误位置的下一个字符开始，扫描的字符串集合清空
+							successSituation = 2;
+						}
+						break;
+					} else {
+						// 当前字符串存在
+						scannedMap.put(cur, scannedMap.get(cur) + 1);
+						copy.put(cur, copy.get(cur) - 1);
+						scanned += len;
+					}
+				}
+				// 维护2个属性：已经扫描的List，和剩余字符串的Map
+				if (successSituation == 2) {
+					// 下一次直接跳到当前字符串的下一个位置，List和Map重置
+					j += scanned + len;
+					scannedMap = new HashMap<>(initScanned);
+					copy = new HashMap<>(initMap);
+				} else {
+					// 下一次前进一格 len 的长度，无论成功与否
+					String first = s.substring(j, j + len);
+					scannedMap.put(first, scannedMap.get(first) - 1);
+					copy.put(first, copy.get(first) + 1);
+					if (successSituation == 0) {
+						// 结果集
+						result.add(j);
+					}
+					j += len;
+				}
+			}
+		}
+		return result;
+	}
+	
+	private static int calcScanned(Map<String, Integer> scannedMap) {
+		int result = 0;
+		for (String key : scannedMap.keySet()) {
+			result += scannedMap.get(key);
+		}
+		return result;
+	}
+	
+	public static List<Integer> method_3(String s, String[] words) {
+		List<Integer> result = new LinkedList<>();
+		if (words == null || s == null || words.length == 0) {
+			return result;
+		}
+		// 匹配数组转成 Map 键值对存储：字符串-出现次数
+		Map<String, Integer> initMap = new HashMap<>();
+		for (String word : words) {
+			if (initMap.containsKey(word)) {
+				initMap.put(word, initMap.get(word) + 1);
+			} else {
+				initMap.put(word, 1);
+			}
+		}
+		// 单次和总体匹配长度
+		int len = words[0].length();
+		int total = len * words.length;
+		// 第一层循环，分为 len 组
+		for (int i = 0; i < len; i++) {
+			Map<String, Integer> copy = new HashMap<>(initMap);
+			List<String> scannedList = new ArrayList<>();
+			// 第二层循环，遍历当前组，每次累加 的长度由第三层循环决定
+			for (int j = i; j < s.length() + 1 - total;) {
+				// 成功情况，分三种
+				int successSituation = 0;
+				// 第三层循环，判断当前其实位置是否符合
+				for (int k = j + scannedList.size() * len; k < j + total; k += len) {
+					String cur = s.substring(k, k + len);
+					if (!containsMap(copy, cur)) {
+						if (scannedList.contains(cur)) {
+							// 下一次遍历，已经扫描的字符串数组，去掉一个当前字符串
+							successSituation = 1;
+						} else {
+							// 下一次遍历，从错误位置的下一个字符开始，扫描的字符串集合清空
+							successSituation = 2;
 						}
 						break;
 					} else {
 						// 当前字符串存在
 						scannedList.add(cur);
 						copy.put(cur, copy.get(cur) - 1);
-						scanLen += len;
 					}
 				}
-			}
-		}
-
-		// 下一组匹配的 Map
-		List<Map<String, Integer>> groupList = new ArrayList<>();
-		// 上一次匹配的出错位置
-		int[] wrongLocation = new int[len];
-		for (int i = 0; i < len; i++) {
-			wrongLocation[i] = -1;
-		}
-		// Map的剩余长度
-		int[] mapLen = new int[len];
-		for (int i = 0; i < len; i++) {
-			mapLen[i] = words.length;
-		}
-		// 上一组的匹配结果
-		// 单独计算第一组的结果
-		for (int i = 0; i < len && i < s.length() + 1 - total; i++) {
-			Map<String, Integer> deal = null;
-			// 组号
-			int groupId = i % len;
-			// 先判断这一组，上次出错位置
-			if (wrongLocation[groupId] == -1) {
-				// 上一组成功，或者上次出错位置和开始位置匹配
-				deal = groupList.get(groupId);
-			} else {
-				if (wrongLocation[groupId] < i) {
+				// 维护2个属性：已经扫描的List，和剩余字符串的Map
+				if (successSituation == 2) {
+					// 下一次直接跳到当前字符串的下一个位置，List和Map重置
+					j += (scannedList.size() + 1) * len;
+					scannedList = new ArrayList<>();
+					copy = new HashMap<>(initMap);
 				} else {
-					// 直接失败
-
+					// 下一次前进一格 len 的长度，无论成功与否
+					String first = scannedList.get(0);
+					scannedList.remove(first);
+					copy.put(first, copy.get(first) + 1);
+					if (successSituation == 0) {
+						// 结果集
+						result.add(j);
+					}
+					j += len;
 				}
-			}
-			int index = i;
-			int groupLen = mapLen[groupId];
-			while (groupLen != 0) {
-				String cur = s.substring(index, index + len);
-				if (!deal.containsKey(cur)) {
-
-					break;
-				}
-				deal.put(cur, deal.get(cur) - 1);
-				groupLen--;
-			}
-			// 成功匹配
-			if (index == i + total) {
-				result.add(i);
 			}
 		}
 		return result;
+	}
+	
+	private static boolean containsMap(Map<String, Integer> map, String str) {
+		if (!map.containsKey(str) || map.get(str) == 0) {
+			return false;
+		}
+		return true;
 	}
 
 	// 每次前移一位，效率极低
