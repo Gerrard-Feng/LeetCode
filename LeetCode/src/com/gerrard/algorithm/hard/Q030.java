@@ -20,7 +20,7 @@ public class Q030 {
 		System.out.println("\n");
 
 		System.out.println("<==========第二组测试==========>");
-		String s2 = "wordgoodgoodgoodbestword";
+		String s2 = "goodoooogoodwordbestbestgoodgoodgoodbestword";
 		String[] words2 = { "word", "good", "best", "good" };
 		for (int a : findSubstring(s2, words2)) {
 			System.out.print(a + " ");
@@ -37,84 +37,81 @@ public class Q030 {
 
 		System.out.println("<==========第四组测试==========>");
 		String s4 = "abababababababababab";
-		String[] words4 = { "ab", "ab", "ba", "ba" };
+		String[] words4 = { "aba", "bab" };
 		for (int a : findSubstring(s4, words4)) {
 			System.out.print(a + " ");
 		}
 	}
 
 	public static List<Integer> findSubstring(String s, String[] words) {
-		int N = s.length();
-		List<Integer> indexes = new ArrayList<Integer>(s.length());
-		if (words.length == 0) {
-			return indexes;
+		List<Integer> result = new LinkedList<>();
+		if (words == null || s == null || words.length == 0) {
+			return result;
 		}
-		int M = words[0].length();
-		if (N < M * words.length) {
-			return indexes;
+		// 总长度，单条子串长度，遍历终点
+		int total = s.length();
+		int len = words[0].length();
+		int last = total - len + 1;
+		// 先判断一下可能直接退出的情况
+		if (total < len * words.length) {
+			return result;
 		}
-		int last = N - M + 1;
-
-		// map each string in words array to some index and compute target
-		// counters
-		Map<String, Integer> mapping = new HashMap<String, Integer>(words.length);
-		int[][] table = new int[2][words.length];
-		int failures = 0, index = 0;
-		for (int i = 0; i < words.length; ++i) {
-			Integer mapped = mapping.get(words[i]);
-			if (mapped == null) {
-				++failures;
-				mapping.put(words[i], index);
-				mapped = index++;
+		// 后续用来比对的二维数组
+		int[][] compare = new int[2][words.length];
+		// 将子串数组做出转换，放入一个 Map 中，其中的数字代表一个子串，相同的子串对应的数字相同，长度不定
+		Map<String, Integer> map = new HashMap<>();
+		// 对已经匹配的进行计数
+		int matched = 0;
+		for (int i = 0; i < words.length; i++) {
+			Integer j = map.get(words[i]);
+			if (j == null) {
+				map.put(words[i], matched);
+				j = matched++;
 			}
-			++table[0][mapped];
+			// 第二维的下标，就是子串代表的数字，第二维的值，就是其出现的次数
+			compare[0][j]++;
 		}
-
-		// find all occurrences at string S and map them to their current
-		// integer, -1 means no such string is in words array
-		int[] smapping = new int[last];
-		for (int i = 0; i < last; ++i) {
-			String section = s.substring(i, i + M);
-			Integer mapped = mapping.get(section);
-			if (mapped == null) {
-				smapping[i] = -1;
-			} else {
-				smapping[i] = mapped;
-			}
+		// 将父串转化成数组，其中 -1 代表不存在于子串中，其他数字代表子串你对应的值，长度确定
+		int[] smap = new int[last];
+		for (int i = 0; i < smap.length; i++) {
+			String str = s.substring(i, i + len);
+			Integer j = map.get(str);
+			smap[i] = j == null ? -1 : j;
 		}
-
-		// fix the number of linear scans
-		for (int i = 0; i < M; ++i) {
-			// reset scan variables
-			int currentFailures = failures; // number of current mismatches
-			int left = i, right = i;
-			Arrays.fill(table[1], 0);
-			// here, simple solve the minimum-window-substring problem
-			while (right < last) {
-				while (currentFailures > 0 && right < last) {
-					int target = smapping[right];
-					if (target != -1 && ++table[1][target] == table[0][target]) {
-						--currentFailures;
+		// 开始通过转化的 Map 和数组进行判断，将原字符串分成 len 组
+		for (int i = 0; i < len; i++) {
+			// 每一组开始时，先将比对数组清空
+			Arrays.fill(compare[1], 0);
+			// 单个子串字符匹配
+			int currentFailures = matched;
+			for (int start = i, end = i; end < last;) {
+				while (currentFailures > 0 && end < last) {
+					int target = smap[end];
+					// 这里如果出现 target=-1，可以选择直接重置
+					//从局部上来说这么做会增强效率，但是一般都是只在共计 len 组中的，某一组得力，从整体上来讲，效率会降低
+					if (target != -1 && compare[0][target] == ++compare[1][target]) {
+						// 出现子串中有重复情况时，只有最后一个重复的子串匹配之后，才执行减一操作
+						currentFailures--;
 					}
-					right += M;
+					end += len;
 				}
-				while (currentFailures == 0 && left < right) {
-					int target = smapping[left];
-					if (target != -1 && --table[1][target] == table[0][target] - 1) {
-						int length = right - left;
-						// instead of checking every window, we know exactly the
-						// length we want
-						if ((length / M) == words.length) {
-							indexes.add(left);
+				// 父串已经遍历完了子串的所有内容，但是总长度不定，从 start 位置开始考虑
+				while (currentFailures == 0 && start < end) {
+					int target = smap[start];
+					// 去掉开头第一个字符串，判断超过匹配次数的情况
+					if (target != -1 && compare[0][target] - 1 == --compare[1][target]) {
+						// 通过长度判断是否符合条件
+						if (end - start == len * words.length) {
+							result.add(start);
 						}
-						++currentFailures;
+						// 去掉开头的字符串之后，父串不能完全覆盖子串，要 currentFailures 加一，跳出循环
+						currentFailures++;
 					}
-					left += M;
+					start += len;
 				}
 			}
-
 		}
-		return indexes;
+		return result;
 	}
 
 	// 每次前移一位，效率极低
@@ -189,9 +186,6 @@ public class Q030 {
 	// 如果匹配失败时，当前字符串在 List 中存在，对比 List 中的第一个字符串，若不相同，下一次匹配在这个位置时失败
 	public static List<Integer> method_3(String s, String[] words) {
 		List<Integer> result = new LinkedList<>();
-		if (words == null || s == null || words.length == 0) {
-			return result;
-		}
 		// 匹配数组转成 Map 键值对存储：字符串-出现次数
 		Map<String, Integer> initMap = new HashMap<>();
 		for (String word : words) {
@@ -331,5 +325,76 @@ public class Q030 {
 			return false;
 		}
 		return true;
+	}
+
+	// 样例程序
+	public static List<Integer> sample(String s, String[] words) {
+		int N = s.length();
+		List<Integer> indexes = new ArrayList<Integer>(s.length());
+		if (words.length == 0) {
+			return indexes;
+		}
+		int M = words[0].length();
+		if (N < M * words.length) {
+			return indexes;
+		}
+		int last = N - M + 1;
+		// map each string in words array to some index and compute target
+		// counters
+		Map<String, Integer> mapping = new HashMap<String, Integer>(words.length);
+		int[][] table = new int[2][words.length];
+		int failures = 0, index = 0;
+		for (int i = 0; i < words.length; ++i) {
+			Integer mapped = mapping.get(words[i]);
+			if (mapped == null) {
+				++failures;
+				mapping.put(words[i], index);
+				mapped = index++;
+			}
+			++table[0][mapped];
+		}
+		// find all occurrences at string S and map them to their current
+		// integer, -1 means no such string is in words array
+		int[] smapping = new int[last];
+		for (int i = 0; i < last; ++i) {
+			String section = s.substring(i, i + M);
+			Integer mapped = mapping.get(section);
+			if (mapped == null) {
+				smapping[i] = -1;
+			} else {
+				smapping[i] = mapped;
+			}
+		}
+		// fix the number of linear scans
+		for (int i = 0; i < M; ++i) {
+			// reset scan variables
+			int currentFailures = failures; // number of current mismatches
+			int left = i, right = i;
+			Arrays.fill(table[1], 0);
+			// here, simple solve the minimum-window-substring problem
+			while (right < last) {
+				while (currentFailures > 0 && right < last) {
+					int target = smapping[right];
+					if (target != -1 && ++table[1][target] == table[0][target]) {
+						--currentFailures;
+					}
+					right += M;
+				}
+				while (currentFailures == 0 && left < right) {
+					int target = smapping[left];
+					if (target != -1 && --table[1][target] == table[0][target] - 1) {
+						int length = right - left;
+						// instead of checking every window, we know exactly the
+						// length we want
+						if ((length / M) == words.length) {
+							indexes.add(left);
+						}
+						++currentFailures;
+					}
+					left += M;
+				}
+			}
+		}
+		return indexes;
 	}
 }
