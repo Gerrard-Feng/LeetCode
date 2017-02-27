@@ -88,7 +88,7 @@ public class Q030 {
 				while (currentFailures > 0 && end < last) {
 					int target = smap[end];
 					// 这里如果出现 target=-1，可以选择直接重置
-					//从局部上来说这么做会增强效率，但是一般都是只在共计 len 组中的，某一组得力，从整体上来讲，效率会降低
+					// 从局部上来说这么做会增强效率，但是一般都是只在共计 len 组中的，某一组得力，从整体上来讲，效率会降低
 					if (target != -1 && compare[0][target] == ++compare[1][target]) {
 						// 出现子串中有重复情况时，只有最后一个重复的子串匹配之后，才执行减一操作
 						currentFailures--;
