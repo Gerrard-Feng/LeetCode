@@ -7,12 +7,13 @@ public class Q033 {
 	public static void main(String[] args) {
 
 		System.out.println("<==========第一组测试==========>");
-		int[] nums1 = { 5, 1, 2, 3, 4 };
-		System.out.println(search(nums1, 0));
+		int[] nums1 = { 9, 0, 2, 7, 8 };
+		System.out.println(binarySearch(nums1, 1, 4, 3));
+		System.out.println(search(nums1, 3));
 
 		System.out.println("<==========第二组测试==========>");
-		int[] nums2 = { 5, 1, 3 };
-		System.out.println(search(nums2, 3));
+		int[] nums2 = { 3, 5, 1 };
+		System.out.println(search(nums2, 0));
 
 		System.out.println("<==========第三组测试==========>");
 		int[] nums3 = { 1 };
@@ -20,9 +21,7 @@ public class Q033 {
 	}
 
 	public static int search(int[] nums, int target) {
-		if (nums.length == 0) {
-			return -1;
-		}
+		// 数组长度短时，直接顺序查找速度快
 		if (nums.length < 3) {
 			for (int k = 0; k < nums.length; k++) {
 				if (nums[k] == target) {
@@ -31,43 +30,43 @@ public class Q033 {
 			}
 			return -1;
 		}
+		// 没有旋转的情形
 		if (nums[0] < nums[nums.length - 1]) {
 			int index = Arrays.binarySearch(nums, target);
 			return index < 0 ? -1 : index;
 		}
 		// 定位旋转中心 mid，即数组当前值小于上一个值的位置
-		int from = 1, to = nums.length - 1, mid = nums.length - 1;
+		int from = 0, to = nums.length - 1, mid = nums.length - 1;
 		do {
+			// 防止 mid==from
 			mid = (from + to) >>> 1;
+			mid = mid == from ? from + 1 : mid;
+			// 先判断 mid 位置
+			if (nums[mid] < nums[mid - 1]) {
+				break;
+			}
 			int midVal = nums[mid];
 			if (nums[from] > midVal) {
 				// 中心出现在 from-(mid-1)
 				to = mid - 1;
-			} else if (nums[mid] < nums[mid - 1]) {
-				// 中心出现在 mid
-				break;
-			} else if (nums[mid + 1] < nums[mid]) {
-				// 中心出现在 mid + 1，但是这个位置的比较不会出现在下一次循环
-				mid++;
-				break;
 			} else {
 				// 中心出现在 (mid+1)-to
-				from = mid + 1;
+				from = mid;
 			}
-		} while (nums[mid] > nums[mid - 1]);
-		// 对两部分的有序数组，分别进行二分查找
-		int[] array1 = Arrays.copyOfRange(nums, 0, mid);
-		int index1 = Arrays.binarySearch(array1, target);
+		} while (from < to);
+		// 重置 from 和 to
+		from = 0;
+		to = nums.length - 1;
+		int index1 = binarySearch(nums, from, mid - 1, target);
 		if (index1 < 0) {
-			int[] array2 = Arrays.copyOfRange(nums, mid, nums.length);
-			int index2 = Arrays.binarySearch(array2, target);
+			int index2 = binarySearch(nums, mid, to, target);
 			if (index2 >= 0) {
-				return mid + index2;
+				return index2;
 			}
 		} else {
-			// target 在第一部分
 			return index1;
 		}
+		// 查找失败
 		return -1;
 	}
 
@@ -154,6 +153,24 @@ public class Q033 {
 		int index = Arrays.binarySearch(copy, target);
 		if (index >= 0) {
 			return i + 1 + index;
+		}
+		return -1;
+	}
+
+	private static int binarySearch(int[] nums, int from, int to, int target) {
+		if (nums[from] > target || nums[to] < target) {
+			return -1;
+		}
+		while (to >= from) {
+			int mid = (from + to) >>> 1;
+			int midVal = nums[mid];
+			if (midVal > target) {
+				to = mid - 1;
+			} else if (midVal < target) {
+				from = mid + 1;
+			} else {
+				return mid;
+			}
 		}
 		return -1;
 	}

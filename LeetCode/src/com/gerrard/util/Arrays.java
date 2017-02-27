@@ -13,15 +13,18 @@ public class Arrays {
 	 * @return
 	 */
 	public static int binarySearch(int[] nums, int from, int to, int target) {
-		while(to > from) {
-			int middle = (from + to) >>> 1;
-			int midVal = nums[middle];
+		if (nums[from] > target || nums[to] < target) {
+			return -1;
+		}
+		while (to >= from) {
+			int mid = (from + to) >>> 1;
+			int midVal = nums[mid];
 			if (midVal > target) {
-				from = middle;
+				to = mid - 1;
 			} else if (midVal < target) {
-				to = middle;
+				from = mid + 1;
 			} else {
-				return middle;
+				return mid;
 			}
 		}
 		return -1;
