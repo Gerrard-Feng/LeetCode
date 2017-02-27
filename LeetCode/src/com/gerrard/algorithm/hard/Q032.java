@@ -35,6 +35,7 @@ public class Q032 {
 		// 第一次遍历，将数组中，能组成括号的部分，变成0
 		for (int i = index1; i < array.length; i++) {
 			if (array[i] == ')') {
+				// 向前找到与当前")"对应的"("，并且将这两个字符变成0
 				for (int j = i - 1; j > -1; j--) {
 					if (array[j] == '(') {
 						array[i] = array[j] = 0;
