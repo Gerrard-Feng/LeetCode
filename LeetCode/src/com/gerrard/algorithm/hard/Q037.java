@@ -15,11 +15,7 @@ public class Q037 {
 				{ '.', '.', '7', '.', '.', '.', '2', '4', '.' }, { '.', '6', '4', '.', '1', '.', '5', '9', '.' },
 				{ '.', '9', '8', '.', '.', '.', '3', '.', '.' }, { '.', '.', '.', '8', '.', '3', '.', '2', '.' },
 				{ '.', '.', '.', '.', '.', '.', '.', '.', '6' }, { '.', '.', '.', '2', '7', '5', '9', '.', '.' } };
-		show(board);
 		solveSudoku(board);
-		show(board);
-		solveSudoku(board);
-		show(board);
 	}
 
 	private static void show(char[][] board) {
@@ -36,7 +32,25 @@ public class Q037 {
 	public static void solveSudoku(char[][] board) {
 		// 记录某个位置的可选字符集合，键值为：第一维*10+第二维
 		Map<Integer, List<Character>> map = exhaustion(board);
-		board = suppose(map, board);
+		System.out.println("穷举法");
+		show(board);
+		System.out.println("排除法");
+		exclusive(map, board);
+		show(board);
+		Map<Integer, List<Character>> map2 = exhaustion(board);
+		System.out.println("排除法");
+		exclusive(map2, board);
+		show(board);
+		
+		for (int i = 0; i < 9; i++) {
+			List<List<Character>> list = new LinkedList<>();
+			for (int j = 0; j < 9; j++) {
+				Integer key = 10 * i + j;
+				List<Character> cList = map.get(key);
+				list.add(cList);
+			}
+			System.out.println();
+		}
 	}
 
 	// 穷举法
@@ -76,6 +90,78 @@ public class Q037 {
 			last = remain;
 		}
 		return map;
+	}
+
+	// 排除法
+	private static void exclusive(Map<Integer, List<Character>> map, char[][] board) {
+		for (int key : map.keySet()) {
+			List<Character> cList = map.get(key);
+			if (cList == null) {
+				continue;
+			}
+			int i = key / 10;
+			int j = key % 10;
+			for (Character c : cList) {
+				// 1.和该位置同行
+				// 依次判断这个位置可能出现的数字，在这行其他位置是否可能出现
+				// 若都不可能，这个位置的数字就定下了
+				int count1 = 0;
+				for (int k = i * 10; k < i * 10 + 9; k++) {
+					if (k == key) {
+						continue;
+					}
+					List<Character> list1 = map.get(k);
+					if (list1 == null || !list1.contains(c)) {
+						count1++;
+					} else {
+						break;
+					}
+				}
+				if (count1 == 8) {
+					board[i][j] = c;
+					break;
+				}
+				// 2.和该位置同列
+				int count2 = 0;
+				for (int k = j; k < j + 90; k += 10) {
+					if (k == key) {
+						continue;
+					}
+					List<Character> list2 = map.get(k);
+					if (list2 == null || !list2.contains(c)) {
+						count2++;
+					} else {
+						break;
+					}
+				}
+				if (count2 == 8) {
+					board[i][j] = c;
+					break;
+				}
+				// 3.和该位置同方格
+				int count3 = 0;
+				int iStart = 3 * (i / 3);
+				int jStart = 3 * (j / 3);
+				Label1: for (int k = iStart; k < iStart + 3; k += 10) {
+					for (int l = jStart; l < jStart + 3; l++) {
+						int index = k * 10 + l;
+						if (index == key) {
+							continue;
+						}
+						List<Character> list3 = map.get(index);
+						if (list3 == null || !list3.contains(c)) {
+							count3++;
+						} else {
+							break Label1;
+						}
+					}
+				}
+				if (count3 == 8) {
+					board[i][j] = c;
+					break;
+				}
+			}
+		}
 	}
 
 	// 假设法
