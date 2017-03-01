@@ -5,102 +5,127 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Q037 {
 
-	public static void main(String[] args) throws SupposeFailException {
+	public static void main(String[] args) {
 
 		char[][] board = { { '.', '.', '9', '7', '4', '8', '.', '.', '.' },
 				{ '7', '.', '.', '.', '.', '.', '.', '.', '.' }, { '.', '2', '.', '1', '.', '9', '.', '.', '.' },
 				{ '.', '.', '7', '.', '.', '.', '2', '4', '.' }, { '.', '6', '4', '.', '1', '.', '5', '9', '.' },
 				{ '.', '9', '8', '.', '.', '.', '3', '.', '.' }, { '.', '.', '.', '8', '.', '3', '.', '2', '.' },
 				{ '.', '.', '.', '.', '.', '.', '.', '.', '6' }, { '.', '.', '.', '2', '7', '5', '9', '.', '.' } };
+		show(board);
 		solveSudoku(board);
+		show(board);
 	}
 
 	private static void show(char[][] board) {
-		System.out.println("=====================");
+		if (board == null) {
+			return;
+		}
+		System.out.println("=================");
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				System.out.print(board[i][j] + " ");
 			}
 			System.out.println();
 		}
+		System.out.println("=================");
 	}
 
 	// 输入是一个能够解决的数独
-	public static void solveSudoku(char[][] board) throws SupposeFailException {
-		show(board);
-		// 记录某个位置的可选字符集合，键值为：第一维*10+第二维
-		// System.out.println("穷举法");
-		Map<Integer, List<Character>> map = exhaustion(board);
-		// show(board);
-
-		
-		
-		if (map == null || isValidSudoku(map, board) == 1) {
-			throw new SupposeFailException();
+	public static void solveSudoku(char[][] board) {
+		Map<String, Object> resultMap = sudoku(board);
+		char[][] result = (char[][]) resultMap.get("Sudoku");
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				board[i][j] = result[i][j];
+			}
 		}
-//		System.out.println(check(map, board));
-		
-		
-		// System.out.println("排除法");
+	}
+
+	//
+	private static Map<String, Object> sudoku(char[][] board) {
+		// 先用穷举法
+		Map<Integer, List<Character>> map = exhaustion(board);
+		// 穷举法过程中发现错误，数独存在问题，无解
+		if (map == null) {
+			Map<String, Object> resultMap = new HashMap<>();
+			resultMap.put("Status", false);
+			return resultMap;
+		}
+		// 再用排除法
 		map = exclusive(map, board);
-		// show(board);
-
-//		System.out.println(check(map, board));
-		
-		// 对于穷举法和排除法不能解决的问题，使用假设法
-		int isValid = isValidSudoku(map, board);
-		if (isValid == 2) {
-			System.out.println("假设法");
-			while (isValidSudoku(map, board) != 0) {
-				String result = supposeSituation(map, board);
-				
-//				System.out.println(check(map, board));
-
-				System.out.println(result);
-				show(board);
-				char[][] copySudoku = suppose(board, result);
-				
-				
-//				System.out.println(check(map, board));
-				
-				show(copySudoku);
-				System.out.println();
-				try {
-					solveSudoku(copySudoku);
-				} catch (SupposeFailException e) {
-					System.out.println(result + ":假设失败，回退");
-					// 这个假设失败
-					int separatorIndex = result.indexOf("#");
-					int key = Integer.valueOf(result.substring(0, separatorIndex));
-					int cInt = Integer.valueOf(result.substring(separatorIndex + 1));
-					Character c = (char) (cInt + '0');
-					List<Character> list = map.get(key);
-					list.remove(c);
-					map.put(key, list);
-					// 排除假设之后，只有一个可能性
-					if (list.size() == 1) {
-						int i = key / 10;
-						int j = key % 10;
-						board[i][j] = list.get(0);
-						map = exhaustion(board);
-						// 如果这个假设本身就是基于一个错误的假设
-						if (map == null) {
-							throw new SupposeFailException();
-						}
+		show(board);
+		if (map == null) {
+			Map<String, Object> resultMap = new HashMap<>();
+			resultMap.put("Status", false);
+			return resultMap;
+		}
+		if (isValidSudoku(map, board) == 2) {
+			// 必须使用假设法的场景
+			String result = supposeSituation(map, board);
+			int separatorIndex = result.indexOf("#");
+			int key = Integer.valueOf(result.substring(0, separatorIndex));
+			int i = key / 10;
+			int j = key % 10;
+			// 选出相对概率最高的假设新数组，递归解决这个新数组
+			char[][] copySudoku = suppose(board, result);
+			Map<String, Object> rMap = sudoku(copySudoku);
+			if ((boolean) rMap.get("Status")) {
+				rMap.put("Status", true);
+				rMap.put("Sudoku", rMap.get("Sudoku"));
+				return rMap;
+			} else {
+				// 假设失败，回退
+				int cInt = Integer.valueOf(result.substring(separatorIndex + 1));
+				Character c = (char) (cInt + '0');
+				copySudoku = copyArraySudoku(board);
+				map = exhaustion(copySudoku);
+				// 去除这种可能性，因为这种可能性衍生出来的变化也要删去（这很重要）
+				List<Character> list = map.get(key);
+				list.remove(c);
+				map.put(key, list);
+				if (list.size() == 0) {
+					Map<String, Object> resultMap = new HashMap<>();
+					resultMap.put("Status", false);
+					return resultMap;
+				} else if (list.size() == 1) {
+					copySudoku[i][j] = list.get(0);
+					Map<String, Object> resultMap = sudoku(copySudoku);
+					if ((boolean) resultMap.get("Status")) {
+						resultMap.put("Status", true);
+						resultMap.put("Sudoku", resultMap.get("Sudoku"));
+						return resultMap;
+					} else {
+						resultMap.put("Status", false);
+						return resultMap;
+					}
+				} else {
+					// 选择这个位置概率最高的的其他假设
+					String probRemain = calcRelativeProbability(map, i, j);
+					Character cRemain = probRemain.substring(0, probRemain.indexOf("#")).toCharArray()[0];
+					copySudoku[i][j] = cRemain;
+					// 其他假设的结果
+					Map<String, Object> resultMap = sudoku(copySudoku);
+					if ((boolean) resultMap.get("Status")) {
+						resultMap.put("Status", true);
+						resultMap.put("Sudoku", resultMap.get("Sudoku"));
+						return resultMap;
+					} else {
+						resultMap.put("Status", false);
+						return resultMap;
 					}
 				}
 			}
-		} else if (isValid == 0) {
-			show(board);
-			// 数独解析成功
-			return;
-		} else {
-			// 数独解析失败
-			throw new SupposeFailException();
 		}
+		// 不需要假设法直接成功
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("Status", true);
+		resultMap.put("Sudoku", board);
+		return resultMap;
 	}
 
 	// 穷举法
@@ -123,7 +148,6 @@ public class Q037 {
 							board[i][j] = cList.get(0);
 							remain--;
 						} else if (cList.size() == 0) {
-							show(board);
 							// 数独有问题
 							return null;
 						}
@@ -145,7 +169,11 @@ public class Q037 {
 
 	// 排除法
 	private static Map<Integer, List<Character>> exclusive(Map<Integer, List<Character>> map, char[][] board) {
-		for (int key : map.keySet()) {
+		for (Integer key : map.keySet()) {
+			// 内部的穷举法可能导致 map 变为 null
+			if (map == null) {
+				return null;
+			}
 			List<Character> cList = map.get(key);
 			if (cList == null) {
 				continue;
@@ -170,6 +198,7 @@ public class Q037 {
 				}
 				if (count1 == 8) {
 					board[i][j] = c;
+					// 每次能够定位一个数字之后，重新调用穷举法，并更新对应的 Map
 					map = exhaustion(board);
 					break;
 				}
@@ -191,7 +220,7 @@ public class Q037 {
 					map = exhaustion(board);
 					break;
 				}
-				// 3.和该位置同方格
+				// 3.和该位置同小九宫
 				int count3 = 0;
 				int iStart = 3 * (i / 3);
 				int jStart = 3 * (j / 3);
@@ -235,6 +264,7 @@ public class Q037 {
 	}
 
 	// 定位假设法使用的场景
+	// 如果位置是2排3列，假设的字符是6，返回字符串为12#6
 	private static String supposeSituation(Map<Integer, List<Character>> map, char[][] board) {
 		// 找到最大可能性的位置+字符
 		String result = "";
@@ -246,6 +276,7 @@ public class Q037 {
 			}
 			int i = key / 10;
 			int j = key % 10;
+			// 计算相对概率，并解析返回字符串
 			String charAndProb = calcRelativeProbability(map, i, j);
 			int separatorIndex = charAndProb.indexOf("#");
 			String probNum = charAndProb.substring(separatorIndex + 1);
@@ -267,16 +298,17 @@ public class Q037 {
 		List<Character> cList = new LinkedList<>(Arrays.asList(cArray));
 		// 处理横向和纵向
 		for (int k = 0; k < 9; k++) {
-			// 集合不存在该 Character，使用 remove() 方法不会报错
+			// 集合不存在该 Character，使用 remove() 方法不作任何处理
+			// 输入需要指定 Character，不能触发自动装箱
 			Character c1 = board[i][k];
 			cList.remove(c1);
 			Character c2 = board[k][j];
 			cList.remove(c2);
 		}
-		// 定位小方格的位置
+		// 定位小九宫的位置
 		int iStart = 3 * (i / 3);
 		int jStart = 3 * (j / 3);
-		// 处理小方格
+		// 处理小九宫
 		for (int k = iStart; k < iStart + 3; k++) {
 			for (int l = jStart; l < jStart + 3; l++) {
 				Character c = board[k][l];
@@ -291,14 +323,17 @@ public class Q037 {
 	private static String calcRelativeProbability(Map<Integer, List<Character>> map, int i, int j) {
 		int key = i * 10 + j;
 		List<Character> cList = map.get(key);
+		// 集合只有一个时，直接返回
+		if (cList.size() == 1) {
+			return cList.get(0) + "#" + 1;
+		}
 		// 最高概率
 		double maxProb = 0;
 		Character maxCharacter = '0';
 		// 开始计算每个字符的相对概率
-		// 相对概率 = 九宫格出现的概率 × 行出现的概率 × 列出现的概率
+		// 相对概率 = 九宫格出现的概率×行出现的概率×列出现的概率
 		// 九宫格出现的概率：如果九宫格中有2个格可能出现1，目标格可能的数字为1、2、3，另一个格可能出现的数字为1、4，
-		// 那么：目标格中的1在九宫格出现的概率 = 目标格中出现1的概率 × (1 - 另一个格中出现1的概率)，得1/3 × (1-1/2) =
-		// 1/6
+		// 那么：目标格中的1在九宫格出现的概率 = 目标格中出现1的概率 ×(1-另一个格中出现1的概率)，得1/3×(1-1/2)=1/6
 		// 行出现的概率和列出现的概率与九宫格出现的概率的算法原理相同
 		for (Character c : cList) {
 			// 1.同行
@@ -323,7 +358,7 @@ public class Q037 {
 				}
 			}
 			double prob2 = 1.0 / count2 * factor2;
-			// 3.同九宫
+			// 3.同小九宫
 			int count3 = 0;
 			int iStart = 3 * (i / 3);
 			int jStart = 3 * (j / 3);
@@ -358,83 +393,44 @@ public class Q037 {
 				return 2;
 			}
 		}
-		int[] line = new int[9];
 		int[] row = new int[9];
-		int[] cube = new int[9];
+		int[] column = new int[9];
+		int[] box = new int[9];
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				if (board[i][j] != '.') {
 					int check = 1 << (board[i][j] - '0');
 					// 与需要校验的三个数组的对应位置，做与运算，如果大于0，表示某个位置上的数字重复了
-					if ((line[j] & check) > 0 || (row[i] & check) > 0 || (cube[(i / 3) * 3 + j / 3] & check) > 0) {
+					if ((row[j] & check) > 0 || (column[i] & check) > 0 || (box[(i / 3) * 3 + j / 3] & check) > 0) {
 						return 1;
 					}
 					// 做或运算，“累加”次位置的数字，计入下次的校验中
-					line[j] |= check;
-					row[i] |= check;
-					cube[(i / 3) * 3 + j / 3] |= check;
+					row[j] |= check;
+					column[i] |= check;
+					box[(i / 3) * 3 + j / 3] |= check;
 				}
 			}
 		}
 		return 0;
 	}
 
-	// 找到某一个未填位置上，与之同行、同列、同方格中，最小的空格数
-	// 返回值是个数组，长度为2，第一项是个数，第二项是：1-同行；2-同列；3-同方格
-	private static int[] leastPossiblity(char[][] board, int i, int j) {
-		int[] result = new int[2];
-		int count1 = 0, count2 = 0, count3 = 0;
-		for (int k = 0; k < 9; k++) {
-			if (board[i][k] == '.') {
-				count1++;
-			}
-		}
-		for (int k = 0; k < 9; k++) {
-			if (board[k][j] == '.') {
-				count2++;
-			}
-		}
-		int iStart = 3 * (i / 3);
-		int jStart = 3 * (j / 3);
-		for (int k = iStart; k < iStart + 3; k++) {
-			for (int l = jStart; l < jStart + 3; l++) {
-				if (board[k][l] == '.') {
-					count3++;
-				}
-			}
-		}
-		if (count1 <= count2 && count1 <= count3) {
-			result[0] = count1;
-			result[1] = 1;
-		} else if (count2 <= count1 && count1 <= count3) {
-			result[0] = count2;
-			result[1] = 2;
-		} else {
-			result[0] = count3;
-			result[1] = 3;
-		}
-		return result;
-	}
-
 	// 复制数独对应的二维数组
+	// API 自带的方法不能深度复制二维数组
 	private static char[][] copyArraySudoku(char[][] board) {
 		char[][] copy = new char[9][9];
 		for (int i = 0; i < 9; i++) {
 			char[] child = board[i];
 			char[] iChild = Arrays.copyOf(child, 9);
-			copy[i] = iChild;
+			copy[i] = Arrays.copyOf(iChild, 9);
 		}
 		return copy;
 	}
 
-	// 假设失败异常
-	private static class SupposeFailException extends Exception {
-
-		private static final long serialVersionUID = 1L;
-
-	}
-
+	// 用于检测数独对应的，二维数组与 Map 的匹配关系
 	private static boolean check(Map<Integer, List<Character>> map, char[][] board) {
+		if (map == null) {
+			return false;
+		}
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				char c = board[i][j];
