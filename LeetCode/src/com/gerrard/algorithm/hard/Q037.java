@@ -49,7 +49,7 @@ public class Q037 {
 		}
 	}
 
-	// 需要递归的方法，返回判断结果和数组
+	// 需要迭代的方法，返回判断结果和数组
 	private static Map<String, Object> sudoku(char[][] board) {
 		// 先用穷举法
 		Map<Integer, List<Character>> map = exhaustion(board);
@@ -69,7 +69,7 @@ public class Q037 {
 			int separatorIndex = result.indexOf("#");
 			int key = Integer.valueOf(result.substring(0, separatorIndex));
 			int i = key / 10, j = key % 10;
-			// 选出相对概率最高的假设新数组，递归解决这个新数组
+			// 选出相对概率最高的假设新数组，迭代解决这个新数组
 			char[][] copySudoku = suppose(board, result);
 			Map<String, Object> rMap = sudoku(copySudoku);
 			if (judgeResult(rMap)) {
@@ -396,7 +396,7 @@ public class Q037 {
 		return resultMap;
 	}
 
-	// 判断递归方法的返回值
+	// 判断迭代方法的返回值
 	private static boolean judgeResult(Map<String, Object> resultMap) {
 		return (boolean) resultMap.get("Status");
 	}
