@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Q037 {
 
@@ -13,7 +12,7 @@ public class Q037 {
 
 		char[][] board = { { '.', '.', '9', '7', '4', '8', '.', '.', '.' },
 				{ '7', '.', '.', '.', '.', '.', '.', '.', '.' }, { '.', '2', '.', '1', '.', '9', '.', '.', '.' },
-				{ '.', '.', '7', '.', '.', '.', '2', '4', '.' }, { '.', '6', '4', '.', '1', '.', '5', '9', '.' },
+				{ '.', '.', '7', '.', '.', '.', '.', '2', '4' }, { '.', '6', '4', '.', '1', '.', '5', '9', '.' },
 				{ '.', '9', '8', '.', '.', '.', '3', '.', '.' }, { '.', '.', '.', '8', '.', '3', '.', '2', '.' },
 				{ '.', '.', '.', '.', '.', '.', '.', '.', '6' }, { '.', '.', '.', '2', '7', '5', '9', '.', '.' } };
 		show(board);
@@ -46,7 +45,7 @@ public class Q037 {
 		}
 	}
 
-	//
+	// 需要递归的方法，返回判断结果和数组
 	private static Map<String, Object> sudoku(char[][] board) {
 		// 先用穷举法
 		Map<Integer, List<Character>> map = exhaustion(board);
@@ -58,12 +57,6 @@ public class Q037 {
 		}
 		// 再用排除法
 		map = exclusive(map, board);
-		show(board);
-		if (map == null) {
-			Map<String, Object> resultMap = new HashMap<>();
-			resultMap.put("Status", false);
-			return resultMap;
-		}
 		if (isValidSudoku(map, board) == 2) {
 			// 必须使用假设法的场景
 			String result = supposeSituation(map, board);
@@ -427,7 +420,7 @@ public class Q037 {
 	}
 
 	// 用于检测数独对应的，二维数组与 Map 的匹配关系
-	private static boolean check(Map<Integer, List<Character>> map, char[][] board) {
+	public static boolean check(Map<Integer, List<Character>> map, char[][] board) {
 		if (map == null) {
 			return false;
 		}
